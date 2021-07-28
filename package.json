@@ -65,6 +65,9 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "source-map": "~0.6.1"
+    "pet-names": "^1.0.1",
+    "screeps-profiler": "^2.0.1",
+    "source-map": "~0.6.1",
+    "traveler": "^0.1.0"
   }
 }
