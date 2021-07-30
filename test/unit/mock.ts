@@ -4,7 +4,7 @@ export const Game: {
   spawns: any;
   time: any;
 } = {
-  creeps: {},
+  creeps: [],
   rooms: [],
   spawns: {
     Spawn1: {
@@ -36,5 +36,5 @@ export const Memory: {
   creeps: { [name: string]: any };
 } = {
   targetSpawn: undefined,
-  creeps: {}
+  creeps: []
 };

@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { getAdjacentTiles, loop } from "../../src/main";
-import { Game, Memory } from "./mock";
+import { Memory, Game } from "./mock";
 
 describe("main", () => {
   before(() => {
@@ -40,6 +40,7 @@ describe("main", () => {
   it("should set target spawn", () => {
     Memory.targetSpawn = undefined;
     loop();
+    console.log(Memory);
     assert.isDefined(Memory.targetSpawn);
   });
 
