@@ -1,6 +1,6 @@
-import { Game, Memory } from "./mock";
 import { assert } from "chai";
-import { loop } from "../../src/main";
+import { getAdjacentTiles, loop } from "../../src/main";
+import { Game, Memory } from "./mock";
 
 describe("main", () => {
   before(() => {
@@ -25,7 +25,7 @@ describe("main", () => {
     assert.isUndefined(loop());
   });
 
-  it("Automatically delete memory of missing creeps", () => {
+  it("should delete memory of missing creeps", () => {
     Memory.creeps.persistValue = "any value";
     Memory.creeps.notPersistValue = "any value";
 
@@ -35,5 +35,28 @@ describe("main", () => {
 
     assert.isDefined(Memory.creeps.persistValue);
     assert.isUndefined(Memory.creeps.notPersistValue);
+  });
+
+  it("should set target spawn", () => {
+    Memory.targetSpawn = undefined;
+    loop();
+    assert.isDefined(Memory.targetSpawn);
+  });
+
+  it("should get adjacent tiles", () => {
+    const position = new RoomPosition(10, 10, "XYZ");
+    const results: RoomPosition[] = getAdjacentTiles(position);
+    const expected: RoomPosition[] = [
+      new RoomPosition(9, 9, "XYZ"),
+      new RoomPosition(9, 10, "XYZ"),
+      new RoomPosition(9, 11, "XYZ"),
+      new RoomPosition(10, 9, "XYZ"),
+      new RoomPosition(10, 11, "XYZ"),
+      new RoomPosition(11, 9, "XYZ"),
+      new RoomPosition(11, 10, "XYZ"),
+      new RoomPosition(11, 11, "XYZ")
+    ];
+
+    assert.equal(results, expected);
   });
 });

@@ -65,9 +65,14 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "pet-names": "^1.0.1",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "babel": "^6.23.0",
+    "node-random-name": "^1.0.1",
+    "rollup-plugin-babel": "^4.4.0",
     "screeps-profiler": "^2.0.1",
     "source-map": "~0.6.1",
-    "traveler": "^0.1.0"
+    "traveler": "^0.1.0",
+    "typed-screeps": "^2.5.3"
   }
 }

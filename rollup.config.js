@@ -27,7 +27,9 @@ export default {
     clear({ targets: ["dist"] }),
     resolve({ rootDir: "src" }),
     commonjs({
-      "node_modules/pet-names/index.js": ["petNames"]
+      namedExports: {
+        "node_modules/node-random-name/lib/index.js": ["getName"]
+      }
     }),
     typescript({ tsconfig: "./tsconfig.json" }),
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
