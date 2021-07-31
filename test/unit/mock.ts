@@ -43,8 +43,19 @@ export const Game: {
 
 export const Memory: {
   targetSpawn: any;
-  creeps: { [name: string]: any };
+  creeps: { [name: string]: CreepMemory };
+  powerCreeps: { [name: string]: PowerCreepMemory };
+  flags: { [name: string]: FlagMemory };
+  rooms: { [name: string]: RoomMemory };
+  spawns: { [name: string]: SpawnMemory };
 } = {
+  flags: {}, powerCreeps: {}, rooms: {}, spawns: {},
   targetSpawn: undefined,
   creeps: {}
 };
+
+export const mockRoom: RoomPosition = {
+  roomName: "Room1",
+  x: 10,
+  y: 10,
+} as RoomPosition;

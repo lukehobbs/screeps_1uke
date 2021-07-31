@@ -1,40 +1,42 @@
 import { assert } from "chai";
-import { getAdjacentTiles, loop, spawnHandler } from "../../src/main";
-import { Memory, Game } from "./mock";
+import { getAdjacentTiles, spawnHandler } from "../../src/main";
+import { Game, Memory, mockRoom } from "./mock";
 
-import global = NodeJS.Global;
+const globalAny:any = global;
 
-describe("get adjacent tiles", () => {
+describe("getAdjacentTiles", () => {
+  beforeEach(() => {
+    global.Game = <Game>_.clone(Game);
+    globalAny.Memory = <Memory>_.clone(Memory);
+  });
 
+  it("should get all adjacent tiles", () => {
+    const results: RoomPosition[] = getAdjacentTiles(mockRoom);
+    const expected: RoomPosition[] = [
+      {x: 9, y: 9, roomName: "Room1"} as RoomPosition,
+      {x: 9, y: 10, roomName: "Room1"} as RoomPosition,
+      {x: 9, y: 11, roomName: "Room1"} as RoomPosition,
+      {x: 10, y: 9, roomName: "Room1"} as RoomPosition,
+      {x: 10, y: 11, roomName: "Room1"} as RoomPosition,
+      {x: 11, y: 9, roomName: "Room1"} as RoomPosition,
+      {x: 11, y: 10, roomName: "Room1"} as RoomPosition,
+      {x: 11, y: 11, roomName: "Room1"} as RoomPosition,
+    ];
+
+    assert.deepEqual(results, expected);
+  });
 })
 
-describe("main", () => {
+describe("spawnHandler", () => {
 
   beforeEach(() => {
     global.Game = <Game>_.clone(Game);
-    // @ts-ignore
-    global.Memory = <Memory>_.clone(Memory);
+    globalAny.Memory = <Memory>_.clone(Memory);
   });
 
-  it("should set target spawn", () => {
+  it("should set the target spawn", () => {
     spawnHandler();
-    assert.isDefined(global.Memory.targetSpawn);
+    assert.isDefined(globalAny.Memory.targetSpawn);
   });
 
-  it("should get adjacent tiles", () => {
-    const position = new RoomPosition(10, 10, "XYZ");
-    const results: RoomPosition[] = getAdjacentTiles(position);
-    const expected: RoomPosition[] = [
-      new RoomPosition(9, 9, "XYZ"),
-      new RoomPosition(9, 10, "XYZ"),
-      new RoomPosition(9, 11, "XYZ"),
-      new RoomPosition(10, 9, "XYZ"),
-      new RoomPosition(10, 11, "XYZ"),
-      new RoomPosition(11, 9, "XYZ"),
-      new RoomPosition(11, 10, "XYZ"),
-      new RoomPosition(11, 11, "XYZ")
-    ];
-
-    assert.equal(results, expected);
-  });
 });

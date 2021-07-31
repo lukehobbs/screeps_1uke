@@ -11,8 +11,11 @@ declare namespace NodeJS {
   }
 
   interface Memory {
-    uuid: number;
-    log: any;
+    creeps: {[name: string]: CreepMemory};
+    powerCreeps: {[name: string]: PowerCreepMemory};
+    flags: {[name: string]: FlagMemory};
+    rooms: {[name: string]: RoomMemory};
+    spawns: {[name: string]: SpawnMemory};
     targetSpawn: any;
   }
 
@@ -52,8 +55,11 @@ export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
 
   for (let x = pos.x - 1; x < pos.x + 2; x++) {
     for (let y = pos.y - 1; y < pos.y + 2; y++) {
-      if (pos.x !== x && pos.y !== y) {
-        adjacentTiles.push(new RoomPosition(x, y, pos.roomName));
+      if (pos.x !== x || pos.y !== y) {
+        const position = _.clone(pos)
+        position.x = x;
+        position.y = y;
+        adjacentTiles.push(position);
       }
     }
   }
@@ -167,41 +173,6 @@ export const commandCreeps = ((): void => {
   });
 });
 
-// for (const creepsKey in Game.creeps) {
-//   const creep = Game.creeps[creepsKey];
-//   // @ts-ignore
-//   if (creep.memory.role === "harvester") {
-//     // @ts-ignore
-//     if (creep.harvest(Game.getObjectById(creep.memory["working"]) as Source) === ERR_NOT_IN_RANGE) {
-//       // @ts-ignore
-//       creep.moveTo(Game.getObjectById(creep.memory["working"]) as Source);
-//     }
-//     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-//       // @ts-ignore
-//       if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-//         // @ts-ignore
-//         const controller = _.filter(spawn.room.structures, function(structure: Structure<StructureConstant>) {
-//           return structure.structureType === STRUCTURE_CONTROLLER;
-//         })[0];
-//         if (creep.upgradeController(controller as StructureController) === ERR_NOT_IN_RANGE) {
-//           creep.moveTo(controller);
-//         }
-//       }
-//       else if (
-//         // @ts-ignore
-//         creep.transfer(Game.getObjectById(Memory["targetSpawn"]) as StructureSpawn, RESOURCE_ENERGY) ===
-//         ERR_NOT_IN_RANGE
-//       ) {
-//         // @ts-ignore
-//         creep.moveTo(Game.getObjectById(Memory["targetSpawn"]) as StructureSpawn);
-//       }
-//     }
-//   }
-// }
-// });
-
-// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
-// This utility uses source maps to get the line numbers and file names of the original, TS source code
 export const loop = ErrorMapper.wrapLoop(() => {
   clearMemory();
   spawnHandler();
