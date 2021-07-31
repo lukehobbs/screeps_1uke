@@ -1,47 +1,24 @@
 import { assert } from "chai";
-import { getAdjacentTiles, loop } from "../../src/main";
+import { getAdjacentTiles, loop, spawnHandler } from "../../src/main";
 import { Memory, Game } from "./mock";
 
+import global = NodeJS.Global;
+
+describe("get adjacent tiles", () => {
+
+})
+
 describe("main", () => {
-  before(() => {
-    // runs before all test in this block
-  });
 
   beforeEach(() => {
-    // runs before each test in this block
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
-  });
-
-  it("should export a loop function", () => {
-    assert.isTrue(typeof loop === "function");
-  });
-
-  it("should return void when called with no context", () => {
-    assert.isUndefined(loop());
-  });
-
-  it("should delete memory of missing creeps", () => {
-    Memory.creeps.persistValue = "any value";
-    Memory.creeps.notPersistValue = "any value";
-
-    Game.creeps.persistValue = "any value";
-
-    loop();
-
-    assert.isDefined(Memory.creeps.persistValue);
-    assert.isUndefined(Memory.creeps.notPersistValue);
+    global.Game = <Game>_.clone(Game);
+    // @ts-ignore
+    global.Memory = <Memory>_.clone(Memory);
   });
 
   it("should set target spawn", () => {
-    Memory.targetSpawn = undefined;
-    loop();
-    console.log(Memory);
-    assert.isDefined(Memory.targetSpawn);
+    spawnHandler();
+    assert.isDefined(global.Memory.targetSpawn);
   });
 
   it("should get adjacent tiles", () => {

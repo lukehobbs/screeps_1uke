@@ -1,11 +1,13 @@
+// noinspection JSUnusedGlobalSymbols
+
 export const Game: {
   creeps: { [name: string]: any };
   rooms: any;
-  spawns: any;
+  spawns: { [name: string]: any };
   time: any;
 } = {
-  creeps: [],
-  rooms: [],
+  creeps: {},
+  rooms: {},
   spawns: {
     Spawn1: {
       id: "6102fd9ee80e97c0e6553dbb",
@@ -13,19 +15,27 @@ export const Game: {
         name: "W49S6",
         energyAvailable: 300,
         energyCapacityAvailable: 300,
-        visual: { roomName: "W49S6" }
+        visual: { roomName: "W49S6" },
+        find(c: FindConstant) {
+          return [];
+        }
       },
       pos: { x: 19, y: 38, roomName: "W49S6" },
       name: "Spawn1",
-      energy: 300,
-      energyCapacity: 300,
       spawning: null,
-      store: { energy: 300 },
+      store: {
+        energy: 300, getCapacity() {
+          return 300;
+        }
+      },
       owner: { username: "1uke" },
       my: true,
       hits: 5000,
       hitsMax: 5000,
-      structureType: "spawn"
+      structureType: "spawn",
+      spawnCreep(body: BodyPartConstant[], name: string, opts?: SpawnOptions) {
+        return 0;
+      }
     }
   },
   time: 12345
@@ -36,5 +46,5 @@ export const Memory: {
   creeps: { [name: string]: any };
 } = {
   targetSpawn: undefined,
-  creeps: []
+  creeps: {}
 };
