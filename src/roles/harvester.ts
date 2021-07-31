@@ -4,4 +4,4 @@ export const log = (msg: string): void => {
 
 export const execute = (creep: Creep): void => {
   log(`Executing harvester commands for ${creep.name}`);
-}
+};

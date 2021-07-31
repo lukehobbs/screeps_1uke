@@ -1,6 +1,9 @@
 import { SourceMapConsumer } from "source-map";
 
 export class ErrorMapper {
+  // Cache previously mapped traces to improve performance
+  public static cache: { [key: string]: string } = {};
+
   // Cache consumer
   private static _consumer?: SourceMapConsumer;
 
@@ -14,9 +17,6 @@ export class ErrorMapper {
     // eslint-disable-next-line no-underscore-dangle
     return this._consumer;
   }
-
-  // Cache previously mapped traces to improve performance
-  public static cache: { [key: string]: string } = {};
 
   /**
    * Generates a stack trace using a source map generate original symbol names.
