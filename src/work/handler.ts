@@ -2,13 +2,14 @@ import * as harvester from "../roles/harvester";
 import { CreepMemory } from "../types";
 
 export const workHandler = ((): void => {
-  const creeps = _.filter(Game.creeps, true);
+  const creeps = _.collect(Game.creeps);
 
-  creeps.forEach((creep): void => {
-    const creepMemory = creep.memory as CreepMemory;
+  creeps.forEach((creep) => {
+    const c = creep as Creep;
+    const cMemory = c.memory as CreepMemory;
 
-    if (creepMemory.role === "harvester") {
-      harvester.execute(creep);
+    if (cMemory.role === "harvester") {
+      harvester.execute(c);
     }
   });
 });

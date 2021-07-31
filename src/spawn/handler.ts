@@ -1,16 +1,13 @@
 import random_name from "node-random-name";
 import { CARRY, FIND_SOURCES, MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
-import { log } from "../global";
-import { CreepMemory, Memory, SpawnCreepParams } from "../types";
-import { getAdjacentTiles } from "../utils/helpers";
-// import { getNextCreep } from "../main";
-// import { Memory } from "../main";
+import { log } from "../log";
+import { CreepMemory, SpawnCreepParams } from "../types";
+import { getAdjacentTiles, globalMemory } from "../utils/helpers";
 
 export const spawnHandler = (): void => {
   const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
-  const globalMemory = (Memory as unknown as Memory);
-  globalMemory.targetSpawn = spawn.id;
-  log(`Target spawn is ${globalMemory.targetSpawn}`);
+  globalMemory(Memory).targetSpawn = spawn.id;
+  log(`Target spawn is ${globalMemory(Memory).targetSpawn}`);
 
   const energyStored = spawn?.store.energy;
   const energyCapacity = (spawn?.store && spawn.store.getCapacity(RESOURCE_ENERGY)) ?? 0;

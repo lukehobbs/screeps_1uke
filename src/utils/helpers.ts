@@ -1,3 +1,5 @@
+import { Memory } from "../types";
+
 export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
   const adjacentTiles: RoomPosition[] = [];
 
@@ -12,4 +14,8 @@ export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
     }
   }
   return adjacentTiles;
+};
+
+export const globalMemory = function(memory: any) {
+  return memory as unknown as Memory
 };
