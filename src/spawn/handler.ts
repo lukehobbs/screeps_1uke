@@ -33,6 +33,14 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
     });
     bodyParts.push(WORK, CARRY, MOVE);
   }
+  if (role === BUILDER) {
+    extensions?.forEach(function(extension) {
+      if (extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+        bodyParts.push(WORK);
+      }
+    });
+    bodyParts.push(WORK, CARRY, MOVE);
+  }
   return bodyParts;
 };
 
@@ -48,6 +56,7 @@ export const spawnHandler = (): void => {
   const creeps = _.countBy(Game.creeps, "memory.role");
   log(`\tCREEPS: ${JSON.stringify(creeps)}`);
 
+  // TODO: log msg when actively spawning
   if (!spawn?.spawning) {
     const nextCreep = getNextCreep(spawn, false);
     if (nextCreep?.opts !== undefined) {
@@ -113,8 +122,8 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
   })[0] as StructureController;
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
-  structures.set(spawn.id, 4);
-  structures.set(controller.id, 2);
+  structures.set(spawn.id, 1);
+  structures.set(controller.id, 5);
 
   return structures;
 }
@@ -136,7 +145,7 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 
     // TODO: solve for removing -1
-    if (sourceHarvesters < (desired - 1)) {
+    if (sourceHarvesters < (desired) && desired < 5) {
       // @ts-ignore TODO: workaround for missing _trav here
       creepMemory = new (class implements CreepMemory {
         public role = "harvester";
@@ -187,6 +196,33 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
       }
     }
   });
+
+  const currentBuilders = _.filter(Game.creeps, function(creep: Creep) {
+    return (creep.memory as CreepMemory | null)?.role === "builder";
+  }).map(function(creep) {
+    return (creep.memory as CreepMemory).working;
+  });
+
+  const constructionSites = _.values(Game.constructionSites);
+
+  if (currentBuilders.length < constructionSites.length) {
+    // @ts-ignore TODO: workaround for missing _trav here
+    creepMemory = new (class implements CreepMemory {
+      public role = "builder";
+      public room: string = spawn?.room?.name ?? "";
+    })();
+
+    if (spawnParams === undefined) {
+      spawnParams = new (class implements SpawnCreepParams {
+        public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
+        public name = getCreepName(creepMemory?.role) ?? "";
+        public opts: SpawnOptions = new (class implements SpawnOptions {
+          public dryRun: boolean = dryRun;
+          public memory: CreepMemory = creepMemory;
+        })();
+      })();
+    }
+  }
 
   return spawnParams;
 };

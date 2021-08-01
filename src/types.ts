@@ -21,6 +21,8 @@ export declare namespace NodeJS {
     room: string;
     working: string;
     _trav: any | undefined;
+    unloading: boolean;
+    repairing: boolean;
   }
 
   const RESOURCE_ENERGY: ResourceConstant;

@@ -11,7 +11,7 @@ export function execute(creep: Creep): void {
 
   let err: ScreepsReturnCode = creep.harvest(targetSource);
   if (err === ERR_NOT_IN_RANGE) {
-    log(`Moving to: ${targetSource.id}`, creep);
+    log(`Moving to energy source at (${targetSource?.pos?.x},${targetSource?.pos?.y})`, creep);
     creep.travelTo(targetSource);
   }
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
