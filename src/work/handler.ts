@@ -1,4 +1,5 @@
 import * as harvester from "../roles/harvester";
+import * as hauler from "../roles/hauler";
 import { CreepMemory } from "../types";
 
 export const workHandler = ((): void => {
@@ -10,6 +11,8 @@ export const workHandler = ((): void => {
 
     if (cMemory.role === "harvester") {
       harvester.execute(c);
+    } else if (cMemory.role === "hauler") {
+      hauler.execute(c);
     }
   });
 });

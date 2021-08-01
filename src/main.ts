@@ -1,5 +1,7 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { ErrorMapper } from "utils/ErrorMapper";
-import { log } from "./log";
+import { logHorizSeparator } from "./log";
 import { spawnHandler } from "./spawn/handler";
 import { workHandler } from "./work/handler";
 
@@ -12,10 +14,8 @@ export const cleanupMemory = (): void => {
 };
 
 export const loop = ErrorMapper.wrapLoop(() => {
-  log("Cleaning up memory...");
+  logHorizSeparator();
   cleanupMemory();
-  log("Spawning creeps...");
   spawnHandler();
-  log("Putting creeps to work...");
   workHandler();
 });
