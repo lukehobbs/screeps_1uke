@@ -1,8 +1,8 @@
 import random_name from "node-random-name";
-import { FIND_SOURCES, MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
+import { MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
 import { log } from "../log";
 import { CreepMemory, SpawnCreepParams } from "../types";
-import { getAdjacentTiles, globalMemory } from "../utils/helpers";
+import { globalMemory, maxSupportedHarvesters } from "../utils/helpers";
 
 export const HARVESTER = "harvester";
 export const HAULER = "hauler";
@@ -79,25 +79,6 @@ export const spawnHandler = (): void => {
   }
 };
 
-export const maxSupportedHarvesters = (room: Room | undefined): Map<string, number> => {
-  const energySources = room?.find(FIND_SOURCES);
-  const adjacentTiles: Map<string, RoomPosition[]> = new Map<string, RoomPosition[]>();
-  const maxHarvesters: Map<string, number> = new Map<string, number>();
-  energySources?.forEach(source => {
-    adjacentTiles.set(source.id.toString(), getAdjacentTiles(source.pos));
-    let totalFreeTiles = 0;
-    adjacentTiles.forEach(tiles => {
-      tiles.forEach(tile => {
-        if (new Room.Terrain(room?.name ?? "").get(tile.x, tile.y) !== TERRAIN_MASK_WALL) {
-          totalFreeTiles++;
-        }
-      });
-    });
-    maxHarvesters.set(source.id.toString(), totalFreeTiles);
-  });
-  return maxHarvesters;
-};
-
 export const getCreepName = (role: string | null): string | null => {
   if (role === undefined || role === null) {
     return null;
@@ -124,6 +105,7 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
 
   structures.set(spawn.id, 1);
   structures.set(controller.id, 5);
+  structures.set("extensions", 1);
 
   return structures;
 }
@@ -205,7 +187,7 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
 
   const constructionSites = _.values(Game.constructionSites);
 
-  if (currentBuilders.length < constructionSites.length) {
+  if (currentBuilders.length < constructionSites.length && currentBuilders.length < 3) {
     // @ts-ignore TODO: workaround for missing _trav here
     creepMemory = new (class implements CreepMemory {
       public role = "builder";

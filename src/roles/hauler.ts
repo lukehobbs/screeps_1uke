@@ -1,6 +1,6 @@
 import { log } from "../log";
 import { CreepMemory } from "../types";
-import { distanceBetween, globalMemory } from "../utils/helpers";
+import { distanceBetween } from "../utils/helpers";
 import "../utils/traveler/traveler";
 
 export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep) {
@@ -23,12 +23,26 @@ export function execute(creep: Creep): void {
   const targetId = (creep.memory as CreepMemory).working;
   // TODO: fix issues with indexing Game.spawns by Memory.targetSpawn
   //  also can probably handle multiple spawns per tick so might be irrelevant
-  const spawnId = globalMemory(Memory).targetSpawn;
+  // const spawnId = globalMemory(Memory).targetSpawn;
   const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
+
   let targetDest = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
     .filter(function(structure) {
       return structure.id === targetId;
     })[0];
+
+  if (targetId === "extensions") {
+    let extensions = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
+      .filter(function(structure) {
+        return structure.structureType === STRUCTURE_EXTENSION;
+      }) as StructureExtension[];
+    extensions = _.filter(extensions, function(extension) {
+      return extension.store.getFreeCapacity(RESOURCE_ENERGY) !== 0;
+    });
+    targetDest = _.first(_.sortBy(extensions, function(extension) {
+      return distanceBetween(creep.pos, extension.pos);
+    }));
+  }
 
   if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
     (creep.memory as CreepMemory).unloading = false;
@@ -49,6 +63,12 @@ export function execute(creep: Creep): void {
       // Carry energy to spawn
       if (creep.transfer(targetDest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         log(`Moving to spawn at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
+        creep.travelTo(targetDest);
+      }
+    } else if (targetDest.structureType === STRUCTURE_EXTENSION) {
+      // Carry energy to extension
+      if (creep.transfer(targetDest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        log(`Moving to extension at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
         creep.travelTo(targetDest);
       }
     }

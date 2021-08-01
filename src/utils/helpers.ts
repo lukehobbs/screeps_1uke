@@ -1,3 +1,4 @@
+import { FIND_SOURCES } from "../../test/unit/constants";
 import { Memory } from "../types";
 
 export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
@@ -15,6 +16,26 @@ export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
   }
   return adjacentTiles;
 };
+
+export const maxSupportedHarvesters = (room: Room | undefined): Map<string, number> => {
+  const energySources = room?.find(FIND_SOURCES);
+  const adjacentTiles: Map<string, RoomPosition[]> = new Map<string, RoomPosition[]>();
+  const maxHarvesters: Map<string, number> = new Map<string, number>();
+  energySources?.forEach(source => {
+    adjacentTiles.set(source.id.toString(), getAdjacentTiles(source.pos));
+    let totalFreeTiles = 0;
+    adjacentTiles.forEach(tiles => {
+      tiles.forEach(tile => {
+        if (new Room.Terrain(room?.name ?? "").get(tile.x, tile.y) !== TERRAIN_MASK_WALL) {
+          totalFreeTiles++;
+        }
+      });
+    });
+    maxHarvesters.set(source.id.toString(), totalFreeTiles);
+  });
+  return maxHarvesters;
+};
+
 
 export const globalMemory = function(memory: any) {
   return memory as unknown as Memory;
