@@ -17,9 +17,9 @@ export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
 };
 
 export const globalMemory = function(memory: any) {
-  return memory as unknown as Memory
+  return memory as unknown as Memory;
 };
 
-export const distanceBetween = function (a: RoomPosition, b: RoomPosition): number {
+export const distanceBetween = function(a: RoomPosition, b: RoomPosition): number {
   return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
-}
+};

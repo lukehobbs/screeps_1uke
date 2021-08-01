@@ -20,6 +20,7 @@ export declare namespace NodeJS {
     role: string;
     room: string;
     working: string;
+    _trav: any | undefined;
   }
 
   const RESOURCE_ENERGY: ResourceConstant;

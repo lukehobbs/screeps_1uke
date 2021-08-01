@@ -113,8 +113,8 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
   })[0] as StructureController;
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
-  structures.set(spawn.id, 2);
-  structures.set(controller.id, 1);
+  structures.set(spawn.id, 4);
+  structures.set(controller.id, 2);
 
   return structures;
 }
@@ -136,7 +136,8 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 
     // TODO: solve for removing -1
-    if (sourceHarvesters < (desired -1)) {
+    if (sourceHarvesters < (desired - 1)) {
+      // @ts-ignore TODO: workaround for missing _trav here
       creepMemory = new (class implements CreepMemory {
         public role = "harvester";
         public room: string = spawn?.room?.name ?? "";
@@ -167,6 +168,7 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
 
     if (sourceHaulers < desired) {
+      // @ts-ignore TODO: missing _trav
       creepMemory = new (class implements CreepMemory {
         public role = "hauler";
         public room: string = spawn?.room?.name ?? "";
