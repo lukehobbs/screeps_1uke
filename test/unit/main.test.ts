@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { spawnHandler } from "../../src/spawn/handler";
 import { getAdjacentTiles } from "../../src/utils/helpers";
-import { Game, Memory, mockRoom } from "./mock";
+import { Game, Memory, mockRoomPosition1 } from "./mock";
 
 const globalAny: any = global;
 
@@ -10,25 +10,6 @@ globalAny.log = "debug";
 beforeEach(() => {
   global.Game = <Game>_.clone(Game);
   globalAny.Memory = <Memory>_.clone(Memory);
-});
-
-describe("getAdjacentTiles", () => {
-
-  it("should get all adjacent tiles", () => {
-    const results: RoomPosition[] = getAdjacentTiles(mockRoom);
-    const expected: RoomPosition[] = [
-      { x: 9, y: 9, roomName: "Room1" } as RoomPosition,
-      { x: 9, y: 10, roomName: "Room1" } as RoomPosition,
-      { x: 9, y: 11, roomName: "Room1" } as RoomPosition,
-      { x: 10, y: 9, roomName: "Room1" } as RoomPosition,
-      { x: 10, y: 11, roomName: "Room1" } as RoomPosition,
-      { x: 11, y: 9, roomName: "Room1" } as RoomPosition,
-      { x: 11, y: 10, roomName: "Room1" } as RoomPosition,
-      { x: 11, y: 11, roomName: "Room1" } as RoomPosition
-    ];
-
-    assert.deepEqual(results, expected);
-  });
 });
 
 describe("spawnHandler", () => {

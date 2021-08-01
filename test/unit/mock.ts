@@ -1,4 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
+import { FIND_SOURCES, TERRAIN_MASK_WALL } from "./constants";
 
 export const Game: {
   creeps: { [name: string]: any };
@@ -54,8 +55,47 @@ export const Memory: {
   creeps: {}
 };
 
-export const mockRoom: RoomPosition = {
+export const mockRoomPosition1: RoomPosition = {
   roomName: "Room1",
-  x: 10,
-  y: 10,
+  x: 29,
+  y: 34
 } as RoomPosition;
+
+export const mockRoomPosition2: RoomPosition = {
+  roomName: "Room1",
+  x: 21,
+  y: 3
+} as RoomPosition;
+
+export const mockSource1: Source = {
+  id: "source1",
+  pos: mockRoomPosition1
+} as Source;
+
+export const mockSource2: Source = {
+  id: "source2",
+  pos: mockRoomPosition2
+} as Source;
+
+export const mockRoom: Room = {
+  name: "Room1",
+  find<K extends FindConstant>(type: K, opts?: FilterOptions<K>): Array<FindTypes[K]> {
+    if (type === FIND_SOURCES) {
+      return [mockSource1, mockSource2] as Array<FindTypes[K]>;
+    }
+    return [];
+  },
+  getTerrain(): RoomTerrain {
+    return mockRoomTerrain;
+  }
+} as Room;
+
+export const mockRoomTerrain: RoomTerrain = {
+  get(x: number, y: number): 0 | TERRAIN_MASK_WALL {
+    if (x === 22 && y === 4) return 0;
+    if (x === 28 && y === 33) return 0;
+    if (x === 29 && y === 33) return 0;
+    if (x === 30 && y === 33) return 0;
+    else return TERRAIN_MASK_WALL;
+  }
+} as RoomTerrain;

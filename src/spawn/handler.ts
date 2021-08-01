@@ -1,5 +1,5 @@
 import random_name from "node-random-name";
-import { MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
+import { CARRY, MOVE, RESOURCE_ENERGY, WORK, FIND_STRUCTURES, FIND_MY_SPAWNS, OK } from "../../test/unit/constants";
 import { log } from "../log";
 import { CreepMemory, SpawnCreepParams } from "../types";
 import { globalMemory, maxSupportedHarvesters } from "../utils/helpers";
@@ -103,8 +103,8 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
   })[0] as StructureController;
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
-  structures.set(spawn.id, 1);
-  structures.set(controller.id, 5);
+  if (spawn !== undefined) structures.set(spawn.id, 1);
+  if (controller !== undefined) structures.set(controller.id, 5);
   structures.set("extensions", 1);
 
   return structures;

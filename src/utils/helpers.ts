@@ -1,4 +1,4 @@
-import { FIND_SOURCES } from "../../test/unit/constants";
+import { FIND_SOURCES, TERRAIN_MASK_WALL } from "../../test/unit/constants";
 import { Memory } from "../types";
 
 export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
@@ -22,14 +22,12 @@ export const maxSupportedHarvesters = (room: Room | undefined): Map<string, numb
   const adjacentTiles: Map<string, RoomPosition[]> = new Map<string, RoomPosition[]>();
   const maxHarvesters: Map<string, number> = new Map<string, number>();
   energySources?.forEach(source => {
-    adjacentTiles.set(source.id.toString(), getAdjacentTiles(source.pos));
+    adjacentTiles.set(source.id as string, getAdjacentTiles(source.pos));
     let totalFreeTiles = 0;
-    adjacentTiles.forEach(tiles => {
-      tiles.forEach(tile => {
-        if (new Room.Terrain(room?.name ?? "").get(tile.x, tile.y) !== TERRAIN_MASK_WALL) {
-          totalFreeTiles++;
-        }
-      });
+    adjacentTiles.get(source.id)?.forEach(tile => {
+      if (room?.getTerrain().get(tile.x, tile.y) !== TERRAIN_MASK_WALL) {
+        totalFreeTiles++;
+      }
     });
     maxHarvesters.set(source.id.toString(), totalFreeTiles);
   });

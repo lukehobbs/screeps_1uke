@@ -42,6 +42,10 @@ export function execute(creep: Creep): void {
     targetDest = _.first(_.sortBy(extensions, function(extension) {
       return distanceBetween(creep.pos, extension.pos);
     }));
+    if (targetDest === undefined) {
+      log("Nothing to do...", creep);
+      return;
+    }
   }
 
   if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
