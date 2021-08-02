@@ -3,6 +3,8 @@ import { CreepMemory } from "../types";
 import { distanceBetween } from "../utils/helpers";
 import "../utils/traveler/traveler";
 
+// TODO: Merge extension + spawn haulers so a single creep can manage both
+
 // TODO: use path lengths rather than euclidean distance
 export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep): ScreepsReturnCode {
   const droppedEnergies = spawn?.room.find(FIND_DROPPED_RESOURCES)
@@ -22,11 +24,19 @@ export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep):
     return distanceBetween(creep.pos, container.pos);
   })[0];
 
-  if (distanceBetween(creep.pos, closestContainer.pos) < distanceBetween(creep.pos, closestDroppedEnergy.pos)) {
-    if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
+  if (closestContainer?.pos && closestDroppedEnergy?.pos) {
+    if ((distanceBetween(creep.pos, closestContainer?.pos) ?? 0) < (distanceBetween(creep.pos, closestDroppedEnergy?.pos) ?? 0)) {
+      if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
+        return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
+      }
+    } else if (creep.pickup(closestDroppedEnergy) === ERR_NOT_IN_RANGE) {
+      log(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
       return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
     }
+  } else if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+    log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
+    return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
   } else if (creep.pickup(closestDroppedEnergy) === ERR_NOT_IN_RANGE) {
     log(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
     return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
@@ -53,7 +63,7 @@ export function execute(creep: Creep): void {
       creep.travelTo(container);
     }
   }
-  
+
   let targetDest = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
     .filter(function(structure) {
       return structure.id === targetId;

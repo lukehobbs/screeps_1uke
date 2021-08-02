@@ -1,6 +1,6 @@
+import * as builder from "../roles/builder";
 import * as harvester from "../roles/harvester";
 import * as hauler from "../roles/hauler";
-import * as builder from "../roles/builder";
 import * as supporter from "../roles/supporter";
 import { CreepMemory } from "../types";
 

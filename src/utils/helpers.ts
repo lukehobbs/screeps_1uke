@@ -40,5 +40,9 @@ export const globalMemory = function(memory: any) {
 };
 
 export const distanceBetween = function(a: RoomPosition, b: RoomPosition): number {
+  if (a === undefined || b === undefined) {
+    // TODO: handle this better
+    return 200;
+  }
   return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 };

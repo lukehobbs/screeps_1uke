@@ -14,7 +14,7 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
   const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
 
   const extensions = (spawn?.room?.find(FIND_STRUCTURES)?.filter(function(structure) {
-    return structure.structureType === STRUCTURE_EXTENSION;
+    return structure.structureType === STRUCTURE_EXTENSION && structure.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
   }) as StructureExtension[] | null);
 
   // const fullExtensions = extensions?.filter(function(extension) {
@@ -29,7 +29,7 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
     for (let i = 0; i < numWorkParts; i++) {
       bodyParts.push(WORK);
     }
-    bodyParts.push(WORK, MOVE);
+    bodyParts.push(WORK, CARRY, MOVE);
   }
   if (role === HAULER || role === BUILDER) {
     for (let i = 1; i < (extensions?.length ?? 0); i++) {
