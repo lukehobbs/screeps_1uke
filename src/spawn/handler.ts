@@ -1,5 +1,5 @@
 import random_name from "node-random-name";
-import { CARRY, MOVE, RESOURCE_ENERGY, WORK, FIND_STRUCTURES, FIND_MY_SPAWNS, OK } from "../../test/unit/constants";
+import { CARRY, FIND_MY_SPAWNS, FIND_STRUCTURES, MOVE, OK, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
 import { log } from "../log";
 import { CreepMemory, SpawnCreepParams } from "../types";
 import { globalMemory, maxSupportedHarvesters } from "../utils/helpers";
@@ -11,36 +11,37 @@ export const BUILDER = "builder";
 
 export const getCreepBody = (role: string): BodyPartConstant[] => {
   let bodyParts: BodyPartConstant[] = [];
-  const spawn = (Game.spawns[globalMemory(Memory).targetSpawn]);
+  const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
 
-  const extensions = spawn?.room?.find(FIND_STRUCTURES)?.filter(function(structure) {
+  const extensions = (spawn?.room?.find(FIND_STRUCTURES)?.filter(function(structure) {
     return structure.structureType === STRUCTURE_EXTENSION;
-  }) as StructureExtension[] | null;
+  }) as StructureExtension[] | null);
 
+  // const fullExtensions = extensions?.filter(function(extension) {
+  //   return extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
+  // });
+  //
+  // if ((fullExtensions?.length ?? 0) < (extensions?.length ?? 0)) {
+  //   return ["invalid" as BodyPartConstant];
+  // }
   if (role === HARVESTER) {
-    extensions?.forEach(function(extension) {
-      if (extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-        bodyParts.push(WORK);
-      }
-    });
-    bodyParts.push(WORK, WORK, MOVE);
+    let numWorkParts = (extensions?.length ?? 0) / 2; // extensions hold 50 energy and each work part costs 100
+    for (let i = 0; i < numWorkParts; i++) {
+      bodyParts.push(WORK);
+    }
+    bodyParts.push(WORK, MOVE);
   }
-  if (role === HAULER) {
-    extensions?.forEach(function(extension) {
-      if (extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+  if (role === HAULER || role === BUILDER) {
+    for (let i = 1; i < (extensions?.length ?? 0); i++) {
+      if (i % 2 === 0) {
         bodyParts.push(CARRY);
+      } else {
+        bodyParts.push(MOVE);
       }
-    });
+    }
     bodyParts.push(WORK, CARRY, MOVE);
   }
-  if (role === BUILDER) {
-    extensions?.forEach(function(extension) {
-      if (extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-        bodyParts.push(WORK);
-      }
-    });
-    bodyParts.push(WORK, CARRY, MOVE);
-  }
+  log(`Next creep bodyparts: ${JSON.stringify(bodyParts)}`);
   return bodyParts;
 };
 
@@ -104,107 +105,126 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
   if (spawn !== undefined) structures.set(spawn.id, 1);
-  if (controller !== undefined) structures.set(controller.id, 5);
+  if (controller !== undefined) structures.set(controller.id, 3);
   structures.set("extensions", 1);
 
   return structures;
 }
 
 export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean = true): SpawnCreepParams | undefined => {
-  let creepMemory: CreepMemory;
 
-  const harvesterCountDesired = maxSupportedHarvesters(spawn?.room);
+  function maybeGetNextHarvester(): SpawnCreepParams | undefined {
+    let creepMemory: CreepMemory;
+    let spawnParams: SpawnCreepParams | undefined;
+    const currentHarvesters = _.filter(Game.creeps, function(creep: Creep) {
+      return (creep.memory as CreepMemory | null)?.role === "harvester";
+    }).map(function(creep) {
+      return (creep.memory as CreepMemory).working;
+    });
+    const harvesterCountDesired = maxSupportedHarvesters(spawn?.room);
 
-  const currentHarvesters = _.filter(Game.creeps, function(creep: Creep) {
-    return (creep.memory as CreepMemory | null)?.role === "harvester";
-  }).map(function(creep) {
-    return (creep.memory as CreepMemory).working;
-  });
+    // TODO: reconcile this and the getAdjacent tile stuff that sends 1 creep per open space
+    // problem is 1 creep with lots of WORK parts can harvest most of the energy in a single source
+    // ..so no need to send more than 1 (need to test)
+    if (currentHarvesters.length < harvesterCountDesired.size) {
+      harvesterCountDesired.forEach(function(desired: number, sourceId: string) {
+        const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 
-  let spawnParams: SpawnCreepParams | undefined = undefined;
-
-  harvesterCountDesired.forEach(function(desired: number, sourceId: string) {
-    const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
-
-    // TODO: solve for removing -1
-    if (sourceHarvesters < (desired) && desired < 5) {
-      // @ts-ignore TODO: workaround for missing _trav here
-      creepMemory = new (class implements CreepMemory {
-        public role = "harvester";
-        public room: string = spawn?.room?.name ?? "";
-        public working: string = sourceId;
-      })();
-
-      if (spawnParams === undefined) {
-        spawnParams = new (class implements SpawnCreepParams {
-          public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
-          public name = getCreepName(creepMemory?.role) ?? "";
-          public opts: SpawnOptions = new (class implements SpawnOptions {
-            public dryRun: boolean = dryRun;
-            public memory: CreepMemory = creepMemory;
+        if (sourceHarvesters < (desired)) {
+          // @ts-ignore TODO: workaround for missing _trav here
+          creepMemory = new (class implements CreepMemory {
+            public role = "harvester";
+            public room: string = spawn?.room?.name ?? "";
+            public working: string = sourceId;
           })();
-        })();
-      }
+
+          if (spawnParams === undefined) {
+            spawnParams = new (class implements SpawnCreepParams {
+              public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
+              public name = getCreepName(creepMemory?.role) ?? "";
+              public opts: SpawnOptions = new (class implements SpawnOptions {
+                public dryRun: boolean = dryRun;
+                public memory: CreepMemory = creepMemory;
+              })();
+            })();
+          }
+        }
+      });
     }
-  });
-
-  const currentHaulers = _.filter(Game.creeps, function(creep: Creep) {
-    return (creep.memory as CreepMemory | null)?.role === "hauler";
-  }).map(function(creep) {
-    return (creep.memory as CreepMemory).working;
-  });
-  const haulerCountDesired = getDesiredHaulers(spawn?.room);
-
-  haulerCountDesired?.forEach(function(desired: number, sourceId: string) {
-    const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
-
-    if (sourceHaulers < desired) {
-      // @ts-ignore TODO: missing _trav
-      creepMemory = new (class implements CreepMemory {
-        public role = "hauler";
-        public room: string = spawn?.room?.name ?? "";
-        public working: string = sourceId;
-      })();
-
-      if (spawnParams === undefined) {
-        spawnParams = new (class implements SpawnCreepParams {
-          public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
-          public name = getCreepName(creepMemory?.role) ?? "";
-          public opts: SpawnOptions = new (class implements SpawnOptions {
-            public dryRun: boolean = dryRun;
-            public memory: CreepMemory = creepMemory;
-          })();
-        })();
-      }
-    }
-  });
-
-  const currentBuilders = _.filter(Game.creeps, function(creep: Creep) {
-    return (creep.memory as CreepMemory | null)?.role === "builder";
-  }).map(function(creep) {
-    return (creep.memory as CreepMemory).working;
-  });
-
-  const constructionSites = _.values(Game.constructionSites);
-
-  if (currentBuilders.length < constructionSites.length && currentBuilders.length < 3) {
-    // @ts-ignore TODO: workaround for missing _trav here
-    creepMemory = new (class implements CreepMemory {
-      public role = "builder";
-      public room: string = spawn?.room?.name ?? "";
-    })();
-
-    if (spawnParams === undefined) {
-      spawnParams = new (class implements SpawnCreepParams {
-        public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
-        public name = getCreepName(creepMemory?.role) ?? "";
-        public opts: SpawnOptions = new (class implements SpawnOptions {
-          public dryRun: boolean = dryRun;
-          public memory: CreepMemory = creepMemory;
-        })();
-      })();
-    }
+    return spawnParams;
   }
 
-  return spawnParams;
+  function maybeGetNextHauler(): SpawnCreepParams | undefined {
+    let creepMemory: CreepMemory;
+    let spawnParams: SpawnCreepParams | undefined;
+    const currentHaulers = _.filter(Game.creeps, function(creep: Creep) {
+      return (creep.memory as CreepMemory | null)?.role === "hauler";
+    }).map(function(creep) {
+      return (creep.memory as CreepMemory).working;
+    });
+    const haulerCountDesired = getDesiredHaulers(spawn?.room);
+
+    if (currentHaulers.length < (haulerCountDesired?.size ?? 0)) {
+      haulerCountDesired?.forEach(function(desired: number, sourceId: string) {
+        const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
+
+        if (sourceHaulers < desired) {
+          // @ts-ignore TODO: missing _trav
+          creepMemory = new (class implements CreepMemory {
+            public role = "hauler";
+            public room: string = spawn?.room?.name ?? "";
+            public working: string = sourceId;
+          })();
+
+          if (spawnParams === undefined) {
+            spawnParams = new (class implements SpawnCreepParams {
+              public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
+              public name = getCreepName(creepMemory?.role) ?? "";
+              public opts: SpawnOptions = new (class implements SpawnOptions {
+                public dryRun: boolean = dryRun;
+                public memory: CreepMemory = creepMemory;
+              })();
+            })();
+          }
+        }
+      });
+    }
+
+    return spawnParams;
+  }
+
+  function maybeGetNextBuilder(): SpawnCreepParams | undefined {
+    let creepMemory: CreepMemory;
+    let spawnParams: SpawnCreepParams | undefined;
+
+    const currentBuilders = _.filter(Game.creeps, function(creep: Creep) {
+      return (creep.memory as CreepMemory | null)?.role === "builder";
+    }).map(function(creep) {
+      return (creep.memory as CreepMemory).working;
+    });
+
+    const constructionSites = _.values(Game.constructionSites);
+
+    if (currentBuilders.length < constructionSites.length && currentBuilders.length < 3) {
+      // @ts-ignore TODO: workaround for missing _trav here
+      creepMemory = new (class implements CreepMemory {
+        public role = "builder";
+        public room: string = spawn?.room?.name ?? "";
+      })();
+
+      if (spawnParams === undefined) {
+        spawnParams = new (class implements SpawnCreepParams {
+          public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
+          public name = getCreepName(creepMemory?.role) ?? "";
+          public opts: SpawnOptions = new (class implements SpawnOptions {
+            public dryRun: boolean = dryRun;
+            public memory: CreepMemory = creepMemory;
+          })();
+        })();
+      }
+    }
+    return spawnParams;
+  }
+
+  return maybeGetNextHarvester() ?? maybeGetNextHauler() ?? maybeGetNextBuilder();
 };
