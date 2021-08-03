@@ -14,6 +14,7 @@ export declare namespace NodeJS {
     rooms: { [name: string]: RoomMemory };
     spawns: { [name: string]: SpawnMemory };
     targetSpawn: any;
+    homeSpawn: any;
   }
 
   interface CreepMemory {

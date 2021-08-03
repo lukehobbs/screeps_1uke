@@ -16,31 +16,29 @@ export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep):
     return distanceBetween(creep.pos, dropped.pos);
   })[0];
 
-  const containers = spawn?.room.find(FIND_STRUCTURES).filter(function(structure) {
-    return structure.structureType === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
-  });
+  // const containers = spawn?.room.find(FIND_STRUCTURES).filter(function(structure) {
+  //   return structure.structureType === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0;
+  // });
+  //
+  // const closestContainer = _.sortBy(containers, function(container) {
+  //   return distanceBetween(creep.pos, container.pos);
+  // })[0];
 
-  const closestContainer = _.sortBy(containers, function(container) {
-    return distanceBetween(creep.pos, container.pos);
-  })[0];
-
-  if (closestContainer?.pos && closestDroppedEnergy?.pos) {
-    if ((distanceBetween(creep.pos, closestContainer?.pos) ?? 0) < (distanceBetween(creep.pos, closestDroppedEnergy?.pos) ?? 0)) {
-      if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
-        return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
-      }
-    } else if (creep.pickup(closestDroppedEnergy) === ERR_NOT_IN_RANGE) {
-      log(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
-      return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
-    }
-  } else if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-    log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
-    return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
-  } else if (creep.pickup(closestDroppedEnergy) === ERR_NOT_IN_RANGE) {
+  // const target = (closestContainer !== undefined) ? closestContainer : closestDroppedEnergy;
+  // if (target === closestContainer) {
+  //   if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+  //     log(`Moving to container at (${closestContainer?.pos?.x},${closestContainer?.pos?.y})`, creep);
+  //     return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
+  //   }
+  // }
+  // else {
+  if (creep.pickup(closestDroppedEnergy as Resource<RESOURCE_ENERGY>) === ERR_NOT_IN_RANGE) {
     log(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
     return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
   }
+  // }
+
+
   return 0;
 }
 
@@ -52,17 +50,16 @@ export function execute(creep: Creep): void {
   const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
 
   // Default action
-  const container = spawn.room.find(FIND_STRUCTURES)
-    .filter(function(structure) {
-      return structure.structureType === STRUCTURE_CONTAINER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-    })[0];
-
-  if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-    if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE && spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-      // log(`Moving to container at (${container?.pos?.x},${container?.pos?.y})`, creep);
-      creep.travelTo(container);
-    }
-  }
+  // const container = spawn.room.find(FIND_STRUCTURES)
+  //   .filter(function(structure) {
+  //     return structure.structureType === STRUCTURE_CONTAINER && structure.store.getFreeCapacity(RESOURCE_ENERGY) >
+  // 0;
+  //   })[0];
+  //
+  // if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+  //   if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE &&
+  // spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) { // log(`Moving to container at
+  // (${container?.pos?.x},${container?.pos?.y})`, creep); creep.travelTo(container); } }
 
   let targetDest = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
     .filter(function(structure) {
@@ -82,7 +79,18 @@ export function execute(creep: Creep): void {
     }));
     if (targetDest === undefined) {
       log("Nothing to do...", creep);
+      targetDest = spawn.room.find(FIND_STRUCTURES).filter((s) => {
+        return s.structureType === STRUCTURE_CONTROLLER;
+      })[0] as StructureController;
+      if (creep.upgradeController(targetDest) === ERR_NOT_IN_RANGE) {
+        creep.travelTo(targetDest);
+      }
       return;
+    }
+  }
+  else {
+    if (targetDest.structureType === STRUCTURE_CONTROLLER && creep.pos.isNearTo(spawn.pos)) {
+      (creep.memory as CreepMemory).unloading = true;
     }
   }
 
@@ -98,23 +106,27 @@ export function execute(creep: Creep): void {
       if (err === ERR_NOT_IN_RANGE) {
         log(`Moving to controller at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
         (creep as Creep).travelTo(targetDest);
-      } else {
+      }
+      else {
         log(`Upgrading controller at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
       }
-    } else if (targetDest.structureType === STRUCTURE_SPAWN && targetDest.store.getFreeCapacity(RESOURCE_ENERGY)! > 0) {
+    }
+    else if (targetDest.structureType === STRUCTURE_SPAWN && targetDest.store.getFreeCapacity(RESOURCE_ENERGY)! > 0) {
       // Carry energy to spawn
       if (creep.transfer(targetDest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
         log(`Moving to spawn at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
         creep.travelTo(targetDest);
       }
-    } else if (targetDest.structureType === STRUCTURE_EXTENSION && targetDest.store.getFreeCapacity(RESOURCE_ENERGY)! > 0) {
+    }
+    else if (targetDest.structureType === STRUCTURE_EXTENSION && targetDest.store.getFreeCapacity(RESOURCE_ENERGY)! > 0) {
       // Carry energy to extension
       if (creep.transfer(targetDest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE && targetDest.store.getFreeCapacity(RESOURCE_ENERGY)! > 0) {
         log(`Moving to extension at (${targetDest?.pos?.x},${targetDest?.pos?.y})`, creep);
         creep.travelTo(targetDest);
       }
     }
-  } else {
+  }
+  else {
     (creep.memory as CreepMemory).unloading = false;
     if (pickupClosestDroppedEnergy(spawn, creep) !== 0) {
       // go wait at the water cooler
@@ -125,6 +137,5 @@ export function execute(creep: Creep): void {
       creep.travelTo(waterCooler as Flag);
     }
   }
-
 
 }

@@ -20,5 +20,10 @@ export const workHandler = ((): void => {
     } else if (cMemory.role === "supporter") {
       supporter.execute(c);
     }
+
+    // TODO: creep recycling!!
+    // if (!!c.ticksToLive && c.ticksToLive < 100) {
+    //   Game.spawns['Home'].renewCreep(c);
+    // }
   });
 });

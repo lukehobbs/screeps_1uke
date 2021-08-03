@@ -17,30 +17,39 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
     return structure.structureType === STRUCTURE_EXTENSION && structure.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
   }) as StructureExtension[] | null);
 
-  // const fullExtensions = extensions?.filter(function(extension) {
-  //   return extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
-  // });
-  //
-  // if ((fullExtensions?.length ?? 0) < (extensions?.length ?? 0)) {
-  //   return ["invalid" as BodyPartConstant];
-  // }
-  if (role === HARVESTER) {
-    let numWorkParts = (extensions?.length ?? 0) / 2; // extensions hold 50 energy and each work part costs 100
-    for (let i = 0; i < numWorkParts; i++) {
-      bodyParts.push(WORK);
-    }
-    bodyParts.push(WORK, CARRY, MOVE);
-  }
-  if (role === HAULER || role === BUILDER) {
-    for (let i = 1; i < (extensions?.length ?? 0); i++) {
-      if (i % 2 === 0) {
-        bodyParts.push(CARRY);
-      } else {
-        bodyParts.push(MOVE);
+  const fullExtensions = extensions?.filter(function(extension) {
+    return extension.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
+  });
+
+  if (fullExtensions) {
+    if (role === HARVESTER) {
+      let numWorkParts = (extensions?.length ?? 0) / 2; // extensions hold 50 energy and each work part costs 100
+      for (let i = 0; i < numWorkParts; i++) {
+        bodyParts.push(WORK);
       }
+      bodyParts.push(WORK, CARRY, MOVE);
     }
-    bodyParts.push(WORK, CARRY, MOVE);
+    if (role === HAULER || role === BUILDER) {
+      for (let i = 1; i < (extensions?.length ?? 0); i++) {
+        if (i % 2 === 0) {
+          bodyParts.push(CARRY);
+        }
+        else {
+          bodyParts.push(MOVE);
+        }
+      }
+      bodyParts.push(WORK, CARRY, MOVE);
+    }
   }
+  else {
+    if (role === HARVESTER) {
+      bodyParts.push(WORK, WORK, MOVE);
+    }
+    else {
+      bodyParts.push(CARRY, WORK, MOVE);
+    }
+  }
+
   log(`Next creep bodyparts: ${JSON.stringify(bodyParts)}`);
   return bodyParts;
 };
@@ -67,7 +76,8 @@ export const spawnHandler = (): void => {
         if (err !== OK) {
           log(`Can't spawn new creep (code: ${err})`);
           return;
-        } else {
+        }
+        else {
           nextCreep.opts.dryRun = false;
         }
       }
@@ -86,11 +96,14 @@ export const getCreepName = (role: string | null): string | null => {
   }
   if (role === HARVESTER) {
     return `Farmer ${random_name({ first: true })}`;
-  } else if (role === BUILDER) {
+  }
+  else if (role === BUILDER) {
     return `${random_name({ first: true })} the Builder`;
-  } else if (role === HAULER) {
+  }
+  else if (role === HAULER) {
     return `Muscle ${random_name({ first: true })}`;
-  } else {
+  }
+  else {
     return `${_.capitalize(role!)} ${random_name({ first: true })}`;
   }
 };
@@ -105,8 +118,8 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
   if (spawn !== undefined) structures.set(spawn.id, 1);
-  if (controller !== undefined) structures.set(controller.id, 3);
   structures.set("extensions", 1);
+  if (controller !== undefined) structures.set(controller.id, 4);
 
   return structures;
 }
@@ -126,7 +139,7 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     // TODO: reconcile this and the getAdjacent tile stuff that sends 1 creep per open space
     // problem is 1 creep with lots of WORK parts can harvest most of the energy in a single source
     // ..so no need to send more than 1 (need to test)
-    if (currentHarvesters.length < harvesterCountDesired.size) {
+    if (currentHarvesters.length < 2) {
       harvesterCountDesired.forEach(function(desired: number, sourceId: string) {
         const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 
@@ -164,31 +177,29 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     });
     const haulerCountDesired = getDesiredHaulers(spawn?.room);
 
-    if (currentHaulers.length < (haulerCountDesired?.size ?? 0)) {
-      haulerCountDesired?.forEach(function(desired: number, sourceId: string) {
-        const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
+    haulerCountDesired?.forEach(function(desired: number, sourceId: string) {
+      const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
 
-        if (sourceHaulers < desired) {
-          // @ts-ignore TODO: missing _trav
-          creepMemory = new (class implements CreepMemory {
-            public role = "hauler";
-            public room: string = spawn?.room?.name ?? "";
-            public working: string = sourceId;
-          })();
+      if (sourceHaulers < desired) {
+        // @ts-ignore TODO: missing _trav
+        creepMemory = new (class implements CreepMemory {
+          public role = "hauler";
+          public room: string = spawn?.room?.name ?? "";
+          public working: string = sourceId;
+        })();
 
-          if (spawnParams === undefined) {
-            spawnParams = new (class implements SpawnCreepParams {
-              public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
-              public name = getCreepName(creepMemory?.role) ?? "";
-              public opts: SpawnOptions = new (class implements SpawnOptions {
-                public dryRun: boolean = dryRun;
-                public memory: CreepMemory = creepMemory;
-              })();
+        if (spawnParams === undefined) {
+          spawnParams = new (class implements SpawnCreepParams {
+            public body: BodyPartConstant[] = getCreepBody(creepMemory?.role);
+            public name = getCreepName(creepMemory?.role) ?? "";
+            public opts: SpawnOptions = new (class implements SpawnOptions {
+              public dryRun: boolean = dryRun;
+              public memory: CreepMemory = creepMemory;
             })();
-          }
+          })();
         }
-      });
-    }
+      }
+    });
 
     return spawnParams;
   }
@@ -226,5 +237,9 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
     return spawnParams;
   }
 
-  return maybeGetNextHarvester() ?? maybeGetNextHauler() ?? maybeGetNextBuilder();
+  const harvester = maybeGetNextHarvester();
+  const hauler = maybeGetNextHauler();
+  const builder = maybeGetNextBuilder();
+
+  return harvester ?? hauler ?? builder;
 };

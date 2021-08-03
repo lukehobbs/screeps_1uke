@@ -46,3 +46,10 @@ export const distanceBetween = function(a: RoomPosition, b: RoomPosition): numbe
   }
   return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 };
+
+export const bodyCost = function(body: BodyPartConstant[]): number {
+  let sum = 0;
+  for (let i in body)
+    sum += BODYPART_COST[body[i]];
+  return sum;
+};
