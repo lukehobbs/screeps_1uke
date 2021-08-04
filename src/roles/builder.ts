@@ -4,19 +4,13 @@ import { distanceBetween } from "../utils/helpers";
 import "../utils/traveler/traveler";
 import { pickupClosestDroppedEnergy } from "./hauler";
 
-function getBuildTarget(creep: Creep): ConstructionSite | undefined {
+const getBuildTarget = (creep: Creep): ConstructionSite | undefined => {
   const constructionSites = _.values(Game.constructionSites);
 
-  return _.sortBy(constructionSites, function(site: ConstructionSite) {
-    return distanceBetween(creep.pos, site.pos);
-  })[0] as ConstructionSite;
-}
+  return _.sortBy(constructionSites, ({ pos }: ConstructionSite) => distanceBetween(creep.pos, pos))[0] as ConstructionSite;
+};
 
-function createConstructionSite(creep: Creep, room: Room): void {
-  // TODO: pick location and start new construction site
-}
-
-export function execute(creep: Creep): void {
+export const execute = (creep: Creep): void => {
   const spawn = _.values(Game.spawns)[0] as StructureSpawn;
 
   if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
@@ -26,9 +20,7 @@ export function execute(creep: Creep): void {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 || (creep.memory as CreepMemory).unloading) {
     const buildTarget = getBuildTarget(creep) as ConstructionSite;
     if (buildTarget === undefined || (creep.memory as CreepMemory).repairing) {
-      const repairSites = (_.collect(Game.structures) as Structure[]).filter(function(structure) {
-        return structure.hits < structure.hitsMax;
-      });
+      const repairSites = (_.collect(Game.structures) as Structure[]).filter(structure => structure.hits < structure.hitsMax);
       if (repairSites.length !== 0) {
         (creep.memory as CreepMemory).repairing = true;
         if (creep.repair(repairSites[0]) === ERR_NOT_IN_RANGE) {
@@ -55,4 +47,4 @@ export function execute(creep: Creep): void {
     (creep.memory as CreepMemory).unloading = false;
     pickupClosestDroppedEnergy(spawn, creep);
   }
-}
+};

@@ -6,10 +6,11 @@ import { getCreepBody } from "./getCreepBody";
 import { getCreepName } from "./getCreepName";
 
 export const maxSupportedHarvesters = (room: Room | undefined): Map<string, number> => {
-  const energySources = room?.find(FIND_SOURCES);
+  const energySources = room?.find(FIND_SOURCES) ?? [];
   const adjacentTiles: Map<string, RoomPosition[]> = new Map<string, RoomPosition[]>();
   const maxHarvesters: Map<string, number> = new Map<string, number>();
-  energySources?.forEach(source => {
+  for (let i = 0; i < energySources.length; i++){
+    const source = energySources[i];
     adjacentTiles.set(source.id as string, getAdjacentTiles(source.pos));
     let totalFreeTiles = 0;
     adjacentTiles.get(source.id)?.forEach(tile => {
@@ -18,11 +19,11 @@ export const maxSupportedHarvesters = (room: Room | undefined): Map<string, numb
       }
     });
     maxHarvesters.set(source.id.toString(), totalFreeTiles);
-  });
+  }
   return maxHarvesters;
 };
 
-export function maybeGetNextHarvester(spawn: StructureSpawn | undefined, dryRun: boolean): SpawnCreepParams | undefined {
+export const maybeGetNextHarvester = (spawn: StructureSpawn | undefined, dryRun: boolean): SpawnCreepParams | undefined => {
   let spawnParams: SpawnCreepParams | undefined;
   const currentHarvesters =
     _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === HARVESTER)
@@ -53,4 +54,4 @@ export function maybeGetNextHarvester(spawn: StructureSpawn | undefined, dryRun:
     });
   }
   return spawnParams;
-}
+};

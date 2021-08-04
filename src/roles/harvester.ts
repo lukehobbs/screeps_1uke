@@ -3,7 +3,7 @@ import { log } from "../utils/log";
 import { CreepMemory } from "../types/types";
 import "../utils/traveler/traveler";
 
-export function execute(creep: Creep): void {
+export const execute = (creep: Creep): void => {
   const targetId = (creep.memory as CreepMemory).working;
   const targetSource = Game.getObjectById(targetId) as Source;
   const spawnId = globalMemory(Memory).targetSpawn;
@@ -22,4 +22,4 @@ export function execute(creep: Creep): void {
       creep.drop(RESOURCE_ENERGY);
     }
   }
-}
+};

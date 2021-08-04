@@ -1,12 +1,12 @@
-import { log } from "../utils/log";
 import { CreepMemory } from "../types/types";
 import { distanceBetween } from "../utils/helpers";
+import { log } from "../utils/log";
 import "../utils/traveler/traveler";
 
 // TODO: Merge extension + spawn haulers so a single creep can manage both
 
 // TODO: use path lengths rather than euclidean distance
-export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep): ScreepsReturnCode {
+export const pickupClosestDroppedEnergy = (spawn: StructureSpawn, creep: Creep): ScreepsReturnCode => {
   const droppedEnergies = spawn?.room.find(FIND_DROPPED_RESOURCES)
     .filter(function(resource) {
       return resource.resourceType === RESOURCE_ENERGY;
@@ -24,48 +24,27 @@ export function pickupClosestDroppedEnergy(spawn: StructureSpawn, creep: Creep):
 
 
   return 0;
-}
+};
 
-export function execute(creep: Creep): void {
+export const execute = (creep: Creep): void => {
   const targetId = (creep.memory as CreepMemory).working;
-  // TODO: fix issues with indexing Game.spawns by Memory.targetSpawn
-  //  also can probably handle multiple spawns per tick so might be irrelevant
-  // const spawnId = globalMemory(Memory).targetSpawn;
-  const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
+  const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]) as StructureSpawn;
 
-  // Default action
-  // const container = spawn.room.find(FIND_STRUCTURES)
-  //   .filter(function(structure) {
-  //     return structure.structureType === STRUCTURE_CONTAINER && structure.store.getFreeCapacity(RESOURCE_ENERGY) >
-  // 0;
-  //   })[0];
-  //
-  // if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-  //   if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE &&
-  // spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0) { // log(`Moving to container at
-  // (${container?.pos?.x},${container?.pos?.y})`, creep); creep.travelTo(container); } }
-
-  let targetDest = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
-    .filter(function(structure) {
-      return structure.id === targetId;
-    })[0];
+  let targetDest = spawn.room.find(FIND_STRUCTURES)
+    .filter(structure => structure.id === targetId)[0];
 
   if (targetId === "extensions") {
-    let extensions = (spawn as StructureSpawn).room.find(FIND_STRUCTURES)
-      .filter(function(structure) {
-        return structure.structureType === STRUCTURE_EXTENSION;
-      }) as StructureExtension[];
-    extensions = _.filter(extensions, function(extension) {
-      return extension.store.getFreeCapacity(RESOURCE_ENERGY) !== 0;
-    });
-    targetDest = _.first(_.sortBy(extensions, function(extension) {
-      return distanceBetween(creep.pos, extension.pos);
-    }));
+    let extensions = spawn.room.find(FIND_STRUCTURES)
+      .filter(({ structureType }) => structureType === STRUCTURE_EXTENSION) as StructureExtension[];
+
+    extensions = _.filter(extensions, ({ store }) => store.getFreeCapacity(RESOURCE_ENERGY) !== 0);
+    targetDest = _.first(_.sortBy(extensions, ({ pos }) => distanceBetween(creep.pos, pos)));
+
     if (targetDest === undefined) {
       log.action("Nothing to do...", creep);
-      targetDest = spawn.room.find(FIND_STRUCTURES).filter((s) => {
-        return s.structureType === STRUCTURE_CONTROLLER;
-      })[0] as StructureController;
+      targetDest = spawn.room.find(FIND_STRUCTURES)
+        .filter(({ structureType }) => structureType === STRUCTURE_CONTROLLER)[0] as StructureController;
+
       if (creep.upgradeController(targetDest) === ERR_NOT_IN_RANGE) {
         creep.travelTo(targetDest);
       }
@@ -114,12 +93,10 @@ export function execute(creep: Creep): void {
     (creep.memory as CreepMemory).unloading = false;
     if (pickupClosestDroppedEnergy(spawn, creep) !== 0) {
       // go wait at the water cooler
-      const waterCooler = spawn.room.find(FIND_FLAGS).find(function(flag) {
-        return flag.name === "WaterCooler";
-      });
+      const waterCooler = spawn.room.find(FIND_FLAGS).find(({ name }) => name === "WaterCooler");
       log.action(`Taking a break by the water cooler`, creep);
       creep.travelTo(waterCooler as Flag);
     }
   }
 
-}
+};
