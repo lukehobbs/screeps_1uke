@@ -1,4 +1,5 @@
 import { FIND_MY_SPAWNS, FIND_STRUCTURES } from "../../test/unit/constants";
+import { HAULER } from "../constants";
 import { CreepMemory, SpawnCreepParams } from "../types/types";
 import { getCreepBody } from "./getCreepBody";
 import { getCreepName } from "./getCreepName";
@@ -6,7 +7,7 @@ import { getCreepName } from "./getCreepName";
 export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: boolean): SpawnCreepParams | undefined => {
   let spawnParams: SpawnCreepParams | undefined;
   const currentHaulers =
-    _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === "hauler")
+    _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === HAULER)
       .map(creep => (creep.memory as CreepMemory).working);
 
   const haulerCountDesired = getDesiredHaulers(spawn?.room);
@@ -16,12 +17,12 @@ export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: bo
 
     if (sourceHaulers < desired) {
       spawnParams = {
-        body: getCreepBody("hauler"),
-        name: getCreepName("hauler") ?? "",
+        body: getCreepBody(HAULER),
+        name: getCreepName(HAULER) ?? "",
         opts: {
           dryRun: dryRun,
           memory: {
-            role: "hauler",
+            role: HAULER,
             room: spawn?.room?.name ?? "",
             working: sourceId
           }

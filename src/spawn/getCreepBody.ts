@@ -1,4 +1,5 @@
 import { CARRY, FIND_STRUCTURES, MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
+import { BUILDER, HARVESTER, HAULER } from "../constants";
 import { log } from "../utils/log";
 
 export const getCreepBody = (role: string): BodyPartConstant[] => {
@@ -14,14 +15,14 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
   });
 
   if (fullExtensions) {
-    if (role === "harvester") {
+    if (role === HARVESTER) {
       let numWorkParts = (extensions?.length ?? 0) / 2; // extensions hold 50 energy and each work part costs 100
       for (let i = 0; i < numWorkParts; i++) {
         bodyParts.push(WORK);
       }
       bodyParts.push(WORK, CARRY, MOVE);
     }
-    if (role === "hauler" || role === "builder") {
+    if (role === HAULER || role === BUILDER) {
       for (let i = 1; i < (extensions?.length ?? 0); i++) {
         if (i % 2 === 0) {
           bodyParts.push(CARRY);
@@ -34,7 +35,7 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
     }
   }
   else {
-    if (role === "harvester") {
+    if (role === HARVESTER) {
       bodyParts.push(WORK, WORK, MOVE);
     }
     else {

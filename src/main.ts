@@ -1,51 +1,41 @@
 // noinspection JSUnusedGlobalSymbols
 
 import { ErrorMapper } from "utils/ErrorMapper";
-import { FIND_STRUCTURES, STRUCTURE_CONTROLLER } from "../test/unit/constants";
+import { HOME_ROOM, HOME_SPAWN, NUM_RUNNERS, RUNNER } from "./constants";
 import { cleanupMemory } from "./memory/cleanupMemory";
-import { getContainers, getControllers, getEnergySources, getExtensions, globalMemory } from "./memory/globalMemory";
-import { log } from "./utils/log";
-import { getCreepName } from "./spawn/getCreepName";
+import { getContainers, getControllers, getEnergySources, getExtensions } from "./memory/globalMemory";
 import { getNextCreep } from "./spawn/getNextCreep";
-import { CreepMemory, SpawnCreepParams } from "./types/types";
+import { getNextRunner } from "./spawn/getNextRunner";
+import { CreepMemory } from "./types/types";
+import { log } from "./utils/log";
 import { workHandler } from "./work/handler";
 
-export const HARVESTER = "harvester";
-export const HAULER = "hauler";
-export const UPGRADER = "upgrader";
-export const BUILDER = "builder";
-export const RUNNER = "runner";
-export const SUPPORTER = "supporter";
+const init = (room: Room) => {
+  const energySources = getEnergySources(room);
+  log.debug(`Energy sources: ${JSON.stringify(energySources)}`);
 
-const HOME_ROOM = "W39S55";
-const HOME_SPAWN = "Home";
-const NUM_RUNNERS = 1;
+  const extensions = getExtensions(room);
+  log.debug(`Extensions: ${JSON.stringify(extensions.map((id: string) => "-" + id.substring(16)))}`);
 
-function manageHomeRoom() {
+  const controllers = getControllers(room);
+  log.debug(`Controllers: ${JSON.stringify(controllers)}`);
+
+  const containers = getContainers(room);
+  log.debug(`Containers: ${JSON.stringify(containers)}`);
+};
+
+const manageHomeRoom = () => {
   const homeRoomObject = Game.rooms[HOME_ROOM];
   log.debug(`Home Room: ${JSON.stringify(homeRoomObject)}`);
 
-  const energySources = getEnergySources(homeRoomObject);
-  log.debug(`Energy sources: ${JSON.stringify(energySources)}`);
-
-  const extensions = getExtensions(homeRoomObject);
-  log.debug(`Extensions: ${JSON.stringify(extensions)}`);
-
-  const controllers = getControllers(homeRoomObject);
-  log.debug(`Controllers: ${JSON.stringify(controllers)}`);
-
-  const containers = getContainers(homeRoomObject);
-  log.debug(`Containers: ${JSON.stringify(containers)}`);
+  init(homeRoomObject);
 
   const creepsInRoles = _.countBy(Game.creeps, (c: Creep) => (c.memory as CreepMemory).role);
   log.debug(`Creeps: ${JSON.stringify(creepsInRoles)}`);
 
   const spawn = Game.spawns[HOME_SPAWN];
 
-  if (!!spawn.spawning) {
-    log.action(`[${spawn.spawning.name}] Spawning..`);
-  }
-  else {
+  if (!spawn.spawning) {
     let nextCreep = getNextCreep(spawn, false);
     if (!nextCreep && creepsInRoles[RUNNER] < NUM_RUNNERS) {
       nextCreep = getNextRunner();
@@ -57,15 +47,8 @@ function manageHomeRoom() {
       }
     }
   }
-}
-
-function getNextRunner(): SpawnCreepParams {
-  return {
-    body: [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
-    name: getCreepName(RUNNER),
-    opts: { memory: { role: RUNNER } } as SpawnOptions
-  } as SpawnCreepParams;
-}
+  else log.action(`[${spawn.spawning.name}] Spawning..`);
+};
 
 export const loop = ErrorMapper.wrapLoop(() => {
   cleanupMemory();

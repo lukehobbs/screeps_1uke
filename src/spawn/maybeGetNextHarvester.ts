@@ -1,4 +1,5 @@
 import { FIND_SOURCES, TERRAIN_MASK_WALL } from "../../test/unit/constants";
+import { HARVESTER } from "../constants";
 import { CreepMemory, SpawnCreepParams } from "../types/types";
 import { getAdjacentTiles } from "../utils/helpers";
 import { getCreepBody } from "./getCreepBody";
@@ -24,7 +25,7 @@ export const maxSupportedHarvesters = (room: Room | undefined): Map<string, numb
 export function maybeGetNextHarvester(spawn: StructureSpawn | undefined, dryRun: boolean): SpawnCreepParams | undefined {
   let spawnParams: SpawnCreepParams | undefined;
   const currentHarvesters =
-    _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === "harvester")
+    _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === HARVESTER)
       .map(creep => (creep.memory as CreepMemory).working);
 
   const harvesterCountDesired = maxSupportedHarvesters(spawn?.room);
@@ -36,12 +37,12 @@ export function maybeGetNextHarvester(spawn: StructureSpawn | undefined, dryRun:
 
       if (sourceHarvesters < desired) {
         spawnParams = {
-          body: getCreepBody("harvester"),
-          name: getCreepName("harvester") ?? "",
+          body: getCreepBody(HARVESTER),
+          name: getCreepName(HARVESTER) ?? "",
           opts: {
             dryRun: dryRun,
             memory: {
-              role: "harvester",
+              role: HARVESTER,
               room: spawn?.room?.name ?? "",
               working: sourceId
             } as CreepMemory
