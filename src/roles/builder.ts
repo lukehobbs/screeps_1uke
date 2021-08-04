@@ -32,7 +32,7 @@ export function execute(creep: Creep): void {
       if (repairSites.length !== 0) {
         (creep.memory as CreepMemory).repairing = true;
         if (creep.repair(repairSites[0]) === ERR_NOT_IN_RANGE) {
-          log(`Moving to repair at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
+          log.action(`Moving to repair at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
           creep.travelTo(repairSites[0]);
         }
       }
@@ -42,13 +42,13 @@ export function execute(creep: Creep): void {
 
       let err = creep.build(buildTarget);
       if (err === ERR_NOT_IN_RANGE) {
-        log(`Moving to construction site at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
+        log.action(`Moving to construction site at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
         creep.travelTo(buildTarget);
       } else if (err === ERR_INVALID_TARGET) {
-        log(`Finding new construction site`, creep);
+        log.action(`Finding new construction site`, creep);
         (creep.memory as CreepMemory).working = getBuildTarget(creep)?.id as string;
       } else if (err === OK) {
-        log(`Building construction site at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
+        log.action(`Building construction site at (${buildTarget?.pos?.x},${buildTarget?.pos?.y})`, creep);
       }
     }
   } else {

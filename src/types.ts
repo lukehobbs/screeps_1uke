@@ -15,6 +15,11 @@ export declare namespace NodeJS {
     spawns: { [name: string]: SpawnMemory };
     targetSpawn: any;
     homeSpawn: any;
+    energySources: Id<Source>[];
+    extensions: Id<Structure>[];
+    controllers: Id<Structure>[];
+    containers: Id<Structure>[];
+    containersLastChecked: number;
   }
 
   interface CreepMemory {

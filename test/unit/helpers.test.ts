@@ -1,5 +1,6 @@
 import { assert } from "chai";
-import { getAdjacentTiles, maxSupportedHarvesters } from "../../src/utils/helpers";
+import { maxSupportedHarvesters } from "../../src/spawn/maybeGetNextHarvester";
+import { getAdjacentTiles} from "../../src/utils/helpers";
 import { Game, Memory, mockRoom, mockRoomPosition1 } from "./mock";
 
 const globalAny: any = global;

@@ -1,6 +1,6 @@
+import { globalMemory } from "../globalMemory";
 import { log } from "../log";
 import { CreepMemory } from "../types";
-import { globalMemory } from "../utils/helpers";
 import "../utils/traveler/traveler";
 
 export function execute(creep: Creep): void {
@@ -11,7 +11,7 @@ export function execute(creep: Creep): void {
 
   let err: ScreepsReturnCode = creep.harvest(targetSource);
   if (err === ERR_NOT_IN_RANGE) {
-    log(`Moving to energy source at (${targetSource?.pos?.x},${targetSource?.pos?.y})`, creep);
+    log.action(`Moving to energy source at (${targetSource?.pos?.x},${targetSource?.pos?.y})`, creep);
     creep.travelTo(targetSource);
   }
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
