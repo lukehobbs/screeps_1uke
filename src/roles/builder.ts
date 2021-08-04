@@ -1,5 +1,5 @@
-import { log } from "../log";
-import { CreepMemory } from "../types";
+import { log } from "../utils/log";
+import { CreepMemory } from "../types/types";
 import { distanceBetween } from "../utils/helpers";
 import "../utils/traveler/traveler";
 import { pickupClosestDroppedEnergy } from "./hauler";

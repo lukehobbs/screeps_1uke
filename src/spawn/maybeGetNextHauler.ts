@@ -1,5 +1,5 @@
 import { FIND_MY_SPAWNS, FIND_STRUCTURES } from "../../test/unit/constants";
-import { CreepMemory, SpawnCreepParams } from "../types";
+import { CreepMemory, SpawnCreepParams } from "../types/types";
 import { getCreepBody } from "./getCreepBody";
 import { getCreepName } from "./getCreepName";
 

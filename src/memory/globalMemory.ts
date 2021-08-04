@@ -1,6 +1,6 @@
-import { FIND_SOURCES, FIND_STRUCTURES, STRUCTURE_CONTROLLER } from "../test/unit/constants";
-import { log } from "./log";
-import { Memory } from "./types";
+import { FIND_SOURCES, FIND_STRUCTURES, STRUCTURE_CONTROLLER } from "../../test/unit/constants";
+import { log } from "../utils/log";
+import { Memory } from "../types/types";
 
 export const globalMemory = (memory: any) => (memory as unknown as Memory);
 

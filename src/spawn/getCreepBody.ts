@@ -1,5 +1,5 @@
 import { CARRY, FIND_STRUCTURES, MOVE, RESOURCE_ENERGY, WORK } from "../../test/unit/constants";
-import { log } from "../log";
+import { log } from "../utils/log";
 
 export const getCreepBody = (role: string): BodyPartConstant[] => {
   let bodyParts: BodyPartConstant[] = [];

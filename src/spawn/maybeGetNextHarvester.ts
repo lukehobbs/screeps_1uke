@@ -1,5 +1,5 @@
 import { FIND_SOURCES, TERRAIN_MASK_WALL } from "../../test/unit/constants";
-import { CreepMemory, SpawnCreepParams } from "../types";
+import { CreepMemory, SpawnCreepParams } from "../types/types";
 import { getAdjacentTiles } from "../utils/helpers";
 import { getCreepBody } from "./getCreepBody";
 import { getCreepName } from "./getCreepName";

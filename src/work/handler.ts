@@ -3,7 +3,7 @@ import * as harvester from "../roles/harvester";
 import * as hauler from "../roles/hauler";
 import * as supporter from "../roles/supporter";
 import * as runner from "../roles/runner";
-import { CreepMemory } from "../types";
+import { CreepMemory } from "../types/types";
 
 export const workHandler = ((): void => {
   const creeps = _.collect(Game.creeps);

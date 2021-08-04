@@ -1,6 +1,6 @@
-import { globalMemory } from "../globalMemory";
-import { log } from "../log";
-import { CreepMemory } from "../types";
+import { globalMemory } from "../memory/globalMemory";
+import { log } from "../utils/log";
+import { CreepMemory } from "../types/types";
 import "../utils/traveler/traveler";
 
 export function execute(creep: Creep): void {

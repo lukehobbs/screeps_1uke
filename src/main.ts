@@ -2,12 +2,12 @@
 
 import { ErrorMapper } from "utils/ErrorMapper";
 import { FIND_STRUCTURES, STRUCTURE_CONTROLLER } from "../test/unit/constants";
-import { cleanupMemory } from "./cleanupMemory";
-import { getContainers, getControllers, getEnergySources, getExtensions, globalMemory } from "./globalMemory";
-import { log } from "./log";
+import { cleanupMemory } from "./memory/cleanupMemory";
+import { getContainers, getControllers, getEnergySources, getExtensions, globalMemory } from "./memory/globalMemory";
+import { log } from "./utils/log";
 import { getCreepName } from "./spawn/getCreepName";
 import { getNextCreep } from "./spawn/getNextCreep";
-import { CreepMemory, SpawnCreepParams } from "./types";
+import { CreepMemory, SpawnCreepParams } from "./types/types";
 import { workHandler } from "./work/handler";
 
 export const HARVESTER = "harvester";
