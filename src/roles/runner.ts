@@ -8,7 +8,7 @@ const getPickupTarget = (runner: Creep) => _.sortBy(
   r => runner.pos.getRangeTo(r))[0].id;
 
 function getConstructionSite(constructionSites: { [p: string]: ConstructionSite }, runner: Creep) {
-  return _.sortBy(constructionSites, s => runner.pos.getRangeTo(s))[0].id;
+  return _.sortBy(constructionSites, s => runner.pos.getRangeTo(s))[0]?.id;
 }
 
 export const execute = (runner: Creep) => {
