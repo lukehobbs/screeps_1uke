@@ -1,8 +1,7 @@
-import { log } from "../utils/log";
 import { CreepMemory } from "../types/types";
 import { distanceBetween } from "../utils/helpers";
+import { log } from "../utils/log";
 import "../utils/traveler/traveler";
-import { pickupClosestDroppedEnergy } from "./hauler";
 
 const getBuildTarget = (creep: Creep): ConstructionSite | undefined => {
   const constructionSites = _.values(Game.constructionSites);
@@ -10,6 +9,32 @@ const getBuildTarget = (creep: Creep): ConstructionSite | undefined => {
   return _.sortBy(constructionSites, ({ pos }: ConstructionSite) => distanceBetween(creep.pos, pos))[0] as ConstructionSite;
 };
 
+// TODO: use path lengths rather than euclidean distance
+export const pickupClosestDroppedEnergy = (spawn: StructureSpawn, creep: Creep): ScreepsReturnCode => {
+  const droppedEnergies = spawn?.room.find(FIND_DROPPED_RESOURCES)
+    .filter(function(resource) {
+      return resource.resourceType === RESOURCE_ENERGY;
+    });
+
+  const closestDroppedEnergy = _.sortBy(droppedEnergies, function(dropped) {
+    return distanceBetween(creep.pos, dropped.pos);
+  })[0];
+
+  const containers = _.sortBy(_.filter(Game.structures, s => s.structureType === STRUCTURE_CONTAINER), s => creep.pos.getRangeTo(s));
+  if (creep.pos.getRangeTo(containers[0]) < creep.pos.getRangeTo(closestDroppedEnergy)) {
+    if (creep.withdraw(containers[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      log.action(`Moving to container at (${containers[0]?.pos?.x},${containers[0]?.pos?.y})`, creep);
+      return creep.travelTo(containers[0]) as ScreepsReturnCode;
+    }
+  }
+
+  if (creep.pickup(closestDroppedEnergy as Resource<RESOURCE_ENERGY>) === ERR_NOT_IN_RANGE) {
+    log.action(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
+    return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
+  }
+
+  return 0;
+};
 export const execute = (creep: Creep): void => {
   const spawn = _.values(Game.spawns)[0] as StructureSpawn;
 
