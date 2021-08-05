@@ -25,6 +25,18 @@ export const maxSupportedHarvesters = (room: Room | undefined): Map<string, numb
 
 export const maybeGetNextHarvester = (spawn: StructureSpawn | undefined, dryRun: boolean): SpawnCreepParams | undefined => {
   let spawnParams: SpawnCreepParams | undefined;
+
+  // const sources = globalMemory(Memory).energySources;
+  //
+  // const harvesterParts = _.filter(Game.creeps, creep => (creep.memory as CreepMemory).working ?? "" in sources)
+  //   .map(creep => creep.body);
+  //
+  // const harvesterWorkParts = harvesterParts.flatMap((part: BodyPartDefinition[]) => part.filter(p => p.type === WORK))
+  //
+  // if (harvesterWorkParts.length < (sources.length * 5)) {
+  //   // need to map body parts to sources
+  // }
+
   const currentHarvesters =
     _.filter(Game.creeps, (creep: Creep) => (creep.memory as CreepMemory | null)?.role === HARVESTER)
       .map(creep => (creep.memory as CreepMemory).working);
@@ -32,7 +44,7 @@ export const maybeGetNextHarvester = (spawn: StructureSpawn | undefined, dryRun:
   const harvesterCountDesired = maxSupportedHarvesters(spawn?.room);
 
   // TODO: reconcile this and the getAdjacent tile stuff that sends 1 creep per open space
-  if (currentHarvesters.length < 2) {
+  if (currentHarvesters.length < 3) {
     harvesterCountDesired.forEach((desired: number, sourceId: string) => {
       const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 

@@ -16,12 +16,18 @@ export const pickupClosestDroppedEnergy = (spawn: StructureSpawn, creep: Creep):
     return distanceBetween(creep.pos, dropped.pos);
   })[0];
 
+  const containers = _.sortBy(_.filter(Game.structures, s => s.structureType === STRUCTURE_CONTAINER), s => creep.pos.getRangeTo(s));
+  if (creep.pos.getRangeTo(containers[0]) < creep.pos.getRangeTo(closestDroppedEnergy)) {
+    if (creep.withdraw(containers[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+      log.action(`Moving to container at (${containers[0]?.pos?.x},${containers[0]?.pos?.y})`, creep);
+      return creep.travelTo(containers[0]) as ScreepsReturnCode;
+    }
+  }
+
   if (creep.pickup(closestDroppedEnergy as Resource<RESOURCE_ENERGY>) === ERR_NOT_IN_RANGE) {
     log.action(`Moving to dropped resources at (${closestDroppedEnergy?.pos?.x},${closestDroppedEnergy?.pos?.y})`, creep);
     return creep.travelTo(closestDroppedEnergy) as ScreepsReturnCode;
   }
-  // }
-
 
   return 0;
 };

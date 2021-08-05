@@ -18,5 +18,5 @@ const padCreepName = (name?: string): string => {
   if (!name) return "";
   const creeps = _.values(Game.creeps) as Creep[];
   const longestName = _.last(_.sortBy(creeps, creep => creep.name.length))?.name;
-  return "[".concat(name).padEnd(longestName.length + 2, " ").concat("]");
+  return "[".concat(name).padEnd(longestName.length + 1, " ").concat("]");
 };

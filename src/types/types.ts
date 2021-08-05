@@ -23,12 +23,13 @@ export declare namespace NodeJS {
   }
 
   interface CreepMemory {
-    role: string;
-    room: string;
-    working: string;
+    role: string | undefined;
+    room: string | undefined;
+    working: string | undefined;
     _trav: any | undefined;
-    unloading: boolean;
-    repairing: boolean;
+    unloading: boolean | undefined;
+    repairing: boolean | undefined;
+    pickupTarget: string | undefined;
   }
 
   const RESOURCE_ENERGY: ResourceConstant;

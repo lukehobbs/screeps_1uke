@@ -44,8 +44,8 @@ function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefi
 
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
-  if (spawn !== undefined) structures.set(spawn.id, 1);
-  structures.set("extensions", 1);
+  if (spawn !== undefined) structures.set(spawn.id, 2);
+  structures.set("extensions", 2);
   if (controller !== undefined) structures.set(controller.id, 4);
 
   return structures;

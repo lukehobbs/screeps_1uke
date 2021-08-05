@@ -1,7 +1,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 import { ErrorMapper } from "utils/ErrorMapper";
-import { HOME_ROOM, HOME_SPAWN, NUM_RUNNERS, RUNNER } from "./constants";
+import { HOME_ROOM, HOME_SPAWN, DESIRED_RUNNERS, RUNNER } from "./constants";
 import { cleanupMemory } from "./memory/cleanupMemory";
 import { getContainers, getControllers, getEnergySources, getExtensions } from "./memory/globalMemory";
 import { getNextCreep } from "./spawn/getNextCreep";
@@ -30,14 +30,14 @@ const manageHomeRoom = () => {
 
   init(homeRoomObject);
 
-  const creepsInRoles = _.countBy(Game.creeps, (c: Creep) => (c.memory as CreepMemory).role);
-  log.debug(`Creeps: ${JSON.stringify(creepsInRoles)}`);
+  const creepsWithRole = _.countBy(Game.creeps, (c: Creep) => (c.memory as CreepMemory).role);
+  log.debug(`Creeps: ${JSON.stringify(creepsWithRole)}`);
 
   const spawn = Game.spawns[HOME_SPAWN];
 
   if (!spawn.spawning) {
     let nextCreep = getNextCreep(spawn, false);
-    if (!nextCreep && creepsInRoles[RUNNER] < NUM_RUNNERS) {
+    if (!nextCreep && DESIRED_RUNNERS > (creepsWithRole[RUNNER] ?? 0)) {
       nextCreep = getNextRunner();
     }
     if (!!nextCreep) {
@@ -47,7 +47,7 @@ const manageHomeRoom = () => {
       }
     }
   }
-  else log.action(`[${spawn.spawning.name}] Spawning..`);
+  else log.action("Spawning...", spawn.spawning as unknown as Creep);
 };
 
 export const loop = ErrorMapper.wrapLoop(() => {

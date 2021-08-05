@@ -1,7 +1,7 @@
 // Home Room
 export const HOME_ROOM = "W39S55";
 export const HOME_SPAWN = "Home";
-export const NUM_RUNNERS = 1;
+export const DESIRED_RUNNERS = 1;
 
 // Creep Roles
 export const HARVESTER = "harvester";
