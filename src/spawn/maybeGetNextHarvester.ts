@@ -9,7 +9,7 @@ export const maxSupportedHarvesters = (room: Room | undefined): Map<string, numb
   const energySources = room?.find(FIND_SOURCES) ?? [];
   const adjacentTiles: Map<string, RoomPosition[]> = new Map<string, RoomPosition[]>();
   const maxHarvesters: Map<string, number> = new Map<string, number>();
-  for (let i = 0; i < energySources.length; i++){
+  for (let i = 0; i < energySources.length; i++) {
     const source = energySources[i];
     adjacentTiles.set(source.id as string, getAdjacentTiles(source.pos));
     let totalFreeTiles = 0;
@@ -44,26 +44,24 @@ export const maybeGetNextHarvester = (spawn: StructureSpawn | undefined, dryRun:
   const harvesterCountDesired = maxSupportedHarvesters(spawn?.room);
 
   // TODO: reconcile this and the getAdjacent tile stuff that sends 1 creep per open space
-  if (currentHarvesters.length < 3) {
-    harvesterCountDesired.forEach((desired: number, sourceId: string) => {
-      const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
+  harvesterCountDesired.forEach((desired: number, sourceId: string) => {
+    const sourceHarvesters: number = currentHarvesters.filter(s => s === sourceId).length;
 
-      if (sourceHarvesters < desired) {
-        spawnParams = {
-          body: getCreepBody(HARVESTER),
-          name: getCreepName(HARVESTER) ?? "",
-          opts: {
-            dryRun: dryRun,
-            memory: {
-              role: HARVESTER,
-              room: spawn?.room?.name ?? "",
-              working: sourceId
-            } as CreepMemory
-          }
-        };
-        return;
-      }
-    });
-  }
+    if (sourceHarvesters < desired) {
+      spawnParams = {
+        body: getCreepBody(HARVESTER),
+        name: getCreepName(HARVESTER) ?? "",
+        opts: {
+          dryRun: dryRun,
+          memory: {
+            role: HARVESTER,
+            room: spawn?.room?.name ?? "",
+            working: sourceId
+          } as CreepMemory
+        }
+      };
+      return;
+    }
+  });
   return spawnParams;
 };

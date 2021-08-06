@@ -18,19 +18,19 @@ export const execute = (creep: Creep): void => {
     creepMemory.unloading = false;
   }
 
-  if (creepMemory.working === controller[0].id && (creepsWithTarget[controller[0].id] ?? 0) < 5) {
+  if (creepMemory.working === (controller[0]?.id ?? "controller") && (creepsWithTarget[controller[0]?.id] ?? 0) < 5) {
     creepMemory.working = undefined;
   }
 
   if (!creepMemory.working) {
-    if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && (creepsWithTarget[spawn.id] ?? 0) < 1) {
+    if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && (creepsWithTarget[spawn?.id] ?? 0) < 1) {
       log.action("Assigned to spawn", creep);
       creepMemory.working = spawn.id;
     }
     else {
       const extensions = ((_.values(Game.structures) as OwnedStructure[])
         .filter(s => s.structureType === STRUCTURE_EXTENSION) as StructureExtension[])
-        .filter(s => s.store.getUsedCapacity(RESOURCE_ENERGY) === 0 && (creepsWithTarget[s.id as string] ?? 0) === 0);
+        .filter(s => s.store.getUsedCapacity(RESOURCE_ENERGY) === 0 && (creepsWithTarget[s?.id as string] ?? 0) === 0);
 
       if (extensions.length !== 0) {
         log.action("Assigned to extension", creep);
@@ -39,7 +39,7 @@ export const execute = (creep: Creep): void => {
       }
       else {
         const controller = creep.room.find(FIND_STRUCTURES).filter(s => s.structureType === STRUCTURE_CONTROLLER);
-        if (controller.length !== 0 && (creepsWithTarget[controller[0].id] ?? 0) < 5) {
+        if (controller.length !== 0 && (creepsWithTarget[controller[0]?.id] ?? 0) < 5) {
           log.action("Assigned to controller", creep);
           creepMemory.working = controller[0]?.id;
           return;
@@ -104,9 +104,10 @@ export const execute = (creep: Creep): void => {
       }
       else if (err !== OK) {
         creepMemory.pickupTarget = undefined;
-        creepMemory.working = undefined;
-        // creepMemory.unloading = false;
+        creepMemory.unloading = false;
       }
+    } else {
+      creepMemory.unloading = false;
     }
   }
   else {
