@@ -30,6 +30,7 @@ export declare namespace NodeJS {
     unloading: boolean | undefined;
     repairing: boolean | undefined;
     pickupTarget: string | undefined;
+    recycling: boolean | undefined;
   }
 
   const RESOURCE_ENERGY: ResourceConstant;

@@ -1,6 +1,8 @@
 import { log } from "../utils/log";
 import { CreepMemory } from "../types/types";
 import { globalMemory } from "../memory/globalMemory";
+import { FIND_STRUCTURES } from "../../test/unit/constants";
+import { HOME_SPAWN } from "../constants";
 
 const getPickupTarget = (runner: Creep) => _.sortBy(
   runner.room.find(FIND_DROPPED_RESOURCES)
@@ -11,11 +13,7 @@ function getConstructionSite(constructionSites: { [p: string]: ConstructionSite 
   return _.sortBy(constructionSites, s => runner.pos.getRangeTo(s))[0]?.id;
 }
 
-export const execute = (runner: Creep) => {
-  const waterCooler = Game.flags["WaterCooler"];
-  const constructionSites = Game.constructionSites;
-  const controller = globalMemory(Memory).controllers[0];
-
+function bringEnergyToConstructionSites(runner: Creep, constructionSites: { [p: string]: ConstructionSite }, waterCooler: Flag, controller: string & Tag.OpaqueTag<Structure<StructureConstant>>) {
   let creepMemory = runner.memory as CreepMemory;
   if (creepMemory.working) {
     if (!creepMemory.unloading) {
@@ -47,11 +45,53 @@ export const execute = (runner: Creep) => {
     }
   } else if (!!constructionSites && runner.pos.isNearTo(waterCooler)) {
     creepMemory.working = getConstructionSite(constructionSites, runner);
-  }
-  else if (!!controller && runner.pos.isNearTo(waterCooler)) {
+  } else if (!!controller && runner.pos.isNearTo(waterCooler)) {
     creepMemory.working = controller;
-  }
-  else {
+  } else {
     runner.travelTo(waterCooler);
   }
+}
+
+export const execute = (runner: Creep) => {
+  const spawn = Game.spawns[HOME_SPAWN];
+  const waterCooler = Game.flags["WaterCooler"];
+  const constructionSites = Game.constructionSites;
+  const controller = globalMemory(Memory).controllers[0];
+  const creepMemory = runner.memory as CreepMemory;
+
+  if (creepMemory.recycling) {
+    if (spawn.recycleCreep(runner) === ERR_NOT_IN_RANGE) {
+      runner.travelTo(spawn);
+    }
+  }
+
+  if (_.size(constructionSites) != 0) {
+    creepMemory.repairing = false;
+    bringEnergyToConstructionSites(runner, constructionSites, waterCooler, controller);
+  } else {
+    creepMemory.repairing = true;
+  }
+
+  if (creepMemory.repairing) {
+    if (!creepMemory.working) {
+      const structures = runner.room.find(FIND_STRUCTURES).filter(s => s.hits < s.hitsMax);
+      if (structures.length > 0) {
+        creepMemory.working = structures[0].id;
+      }
+    }
+    const target = runner.room.find(FIND_STRUCTURES).find(s => s.id === creepMemory.working);
+    if (!target) {
+      log.error(`can't find target for ${runner.name}`);
+    } else {
+      let err = runner.repair(target);
+      if (err === ERR_NOT_IN_RANGE) {
+        runner.travelTo(target);
+      } else {
+        if (err === ERR_NO_BODYPART) {
+          creepMemory.recycling = true;
+        }
+      }
+    }
+  }
+
 };
