@@ -27,11 +27,10 @@ export const execute = (creep: Creep): void => {
     }
   }
   else {
-    if (_.size(Game.creeps) !== 0 && extensions.length !== 0 && creepsWorkingExtensions.length < 3) {
+    if (_.size(Game.creeps) !== 0 && extensions.length !== 0 && creepsWorkingExtensions.length < 3 || creepMemory.working === "extensions") {
       creepMemory.working = extensions[0].id;
     }
   }
-
 
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     // log.action("Unloading", creep);
