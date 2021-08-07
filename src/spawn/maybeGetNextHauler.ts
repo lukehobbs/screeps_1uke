@@ -13,9 +13,14 @@ export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: bo
   const haulerCountDesired = getDesiredHaulers(spawn?.room);
 
   haulerCountDesired?.forEach(d => {
-    const sourceHaulers: number = currentHaulers.filter(s => s === d[0]).length;
+    let currentHaulersForTarget: number = currentHaulers.filter(s => s === d[0]).length;
 
-    if (sourceHaulers < d[1]) {
+    if (d[0] === "extensions") {
+      const extensions = spawn?.room.find(FIND_STRUCTURES).filter(s => s.structureType === STRUCTURE_EXTENSION).map(s => s.id);
+      currentHaulersForTarget = currentHaulers.filter(s => (s ?? "") in (extensions ?? [])).length;
+    }
+
+    if (currentHaulersForTarget < d[1]) {
       spawnParams = {
         body: getCreepBody(HAULER),
         name: getCreepName(HAULER) ?? "",
@@ -46,6 +51,7 @@ function getDesiredHaulers(room: Room | undefined): [string, number][] {
 
   if (spawn !== undefined) structures.push([spawn.id, 1]);
   if (controller !== undefined) structures.push([controller.id, 3]);
+  structures.push(["extensions", 2]);
 
   return structures;
 }

@@ -17,17 +17,19 @@ export const execute = (creep: Creep): void => {
     const mem = (c.memory as CreepMemory);
     if (mem.working === undefined) {
       return false;
-    }
-    else return extensions.map(x => x.id).includes(mem.working as Id<StructureExtension>);
+    } else return extensions.map(x => x.id).includes(mem.working as Id<StructureExtension>);
   });
+
+  if (creepMemory.working == "extensions") {
+    creepMemory.working = extensions[0].id;
+  }
 
   if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) !== 0) {
     if ((creepsWithTarget[spawn.id] ?? 0) === 0) {
       creepMemory.working = spawn.id;
     }
-  }
-  else {
-    if (_.size(Game.creeps) !== 0 && extensions.length !== 0 && creepsWorkingExtensions.length < 3 || creepMemory.working === "extensions") {
+  } else {
+    if (_.size(Game.creeps) !== 0 && extensions.length !== 0 && creepsWorkingExtensions.length < 3) {
       creepMemory.working = extensions[0].id;
     }
   }
@@ -35,8 +37,7 @@ export const execute = (creep: Creep): void => {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     // log.action("Unloading", creep);
     creepMemory.unloading = true;
-  }
-  else if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
+  } else if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
     // log.action("Loading", creep);
     creepMemory.unloading = false;
   }
@@ -49,8 +50,7 @@ export const execute = (creep: Creep): void => {
     if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && (creepsWithTarget[spawn?.id] ?? 0) < 1) {
       log.action("Assigned to spawn", creep);
       creepMemory.working = spawn.id;
-    }
-    else {
+    } else {
       if (extensions.length !== 0 && (creepsWorkingExtensions.length < 2)) {
         log.action("Assigned to extension", creep);
         creepMemory.working = extensions[0]?.id;
@@ -70,8 +70,7 @@ export const execute = (creep: Creep): void => {
       log.action("Can't hold any more!", creep);
       creepMemory.unloading = true;
       creepMemory.pickupTarget = undefined;
-    }
-    else {
+    } else {
       let target = Game.getObjectById(creepMemory.pickupTarget);
 
       if (target === undefined) {
@@ -83,8 +82,7 @@ export const execute = (creep: Creep): void => {
       let err;
       if ((target as Structure)?.structureType === STRUCTURE_CONTAINER) {
         err = creep.withdraw(target as Structure, RESOURCE_ENERGY);
-      }
-      else {
+      } else {
         err = creep.pickup(target as Resource);
       }
       if (err === ERR_NOT_IN_RANGE) {
@@ -100,35 +98,29 @@ export const execute = (creep: Creep): void => {
             creepMemory.working = undefined;
           }
         }
-      }
-      else if (err !== OK && err !== ERR_BUSY) {
+      } else if (err !== OK && err !== ERR_BUSY) {
         console.log(err);
         log.action("Can't find pickup target", creep);
         creepMemory.pickupTarget = undefined;
       }
     }
-  }
-  else if (creepMemory.unloading) {
+  } else if (creepMemory.unloading) {
     if (creepMemory.working) {
       const workTarget = Game.getObjectById(creepMemory.working) as Structure;
       let err = creep.transfer(workTarget, RESOURCE_ENERGY);
       if (err === ERR_NOT_IN_RANGE) {
         log.action(`Moving to work target: ${creepMemory.working}`, creep);
         creep.travelTo(workTarget);
-      }
-      else if (err === ERR_FULL) {
+      } else if (err === ERR_FULL) {
         creepMemory.working = undefined;
-      }
-      else if (err !== OK) {
+      } else if (err !== OK) {
         creepMemory.pickupTarget = undefined;
         creepMemory.unloading = false;
       }
-    }
-    else {
+    } else {
       creepMemory.unloading = false;
     }
-  }
-  else {
+  } else {
     const droppedResource = _.sortBy(creep.room.find(FIND_DROPPED_RESOURCES).filter(s => s.resourceType === RESOURCE_ENERGY),
       r => creep.pos.getRangeTo(r)
     )[0]?.id;

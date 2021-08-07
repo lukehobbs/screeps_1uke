@@ -12,13 +12,13 @@ const BEST_HAULER_BODY = [
   MOVE, MOVE,
   WORK, WORK, WORK, WORK, WORK,
   CARRY, CARRY, CARRY
-]
+];
 
 const BEST_BUILDER_BODY = [
   MOVE, MOVE, MOVE,
   WORK, WORK, WORK, WORK, WORK,
   CARRY, CARRY
-]
+];
 
 const BASE_CREEP_BODY = [WORK, CARRY, MOVE];
 
@@ -38,7 +38,7 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
 
   if (role == BUILDER && energyAvailable >= bodyCost(BEST_BUILDER_BODY)) {
     log.debug(`Next creep bodyparts: ${JSON.stringify(BEST_BUILDER_BODY)}`);
-    return BEST_BUILDER_BODY
+    return BEST_BUILDER_BODY;
   }
 
   return BASE_CREEP_BODY;

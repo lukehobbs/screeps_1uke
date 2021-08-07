@@ -17,7 +17,7 @@ export const execute = (creep: Creep): void => {
     } else if (err !== OK) {
       creep.drop(RESOURCE_ENERGY);
     }
-  }else {
+  } else {
     err = creep.harvest(targetSource);
     if (err === ERR_NOT_IN_RANGE) {
       log.action(`Moving to energy source at (${targetSource?.pos?.x},${targetSource?.pos?.y})`, creep);
