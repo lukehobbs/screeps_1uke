@@ -50,8 +50,8 @@ function getDesiredHaulers(room: Room | undefined): [string, number][] {
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
   if (spawn !== undefined) structures.push([spawn.id, 1]);
-  if (controller !== undefined) structures.push([controller.id, 3]);
-  structures.push(["extensions", 2]);
+  if (controller !== undefined) structures.push([controller.id, 4]);
+  structures.push(["extensions", 4]);
 
   return structures;
 }
