@@ -12,10 +12,10 @@ export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: bo
 
   const haulerCountDesired = getDesiredHaulers(spawn?.room);
 
-  haulerCountDesired?.forEach((desired: number, sourceId: string) => {
-    const sourceHaulers: number = currentHaulers.filter(s => s === sourceId).length;
+  haulerCountDesired?.forEach(d => {
+    const sourceHaulers: number = currentHaulers.filter(s => s === d[0]).length;
 
-    if (sourceHaulers < desired) {
+    if (sourceHaulers < d[1]) {
       spawnParams = {
         body: getCreepBody(HAULER),
         name: getCreepName(HAULER) ?? "",
@@ -24,7 +24,7 @@ export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: bo
           memory: {
             role: HAULER,
             room: spawn?.room?.name ?? "",
-            working: sourceId
+            working: d[0]
           }
         }
       };
@@ -35,17 +35,17 @@ export const maybeGetNextHauler = (spawn: StructureSpawn | undefined, dryRun: bo
   return spawnParams;
 };
 
-function getDesiredHaulers(room: Room | undefined): Map<string, number> | undefined {
-  if (room === undefined) return undefined;
-  let structures: Map<string, number> = new Map();
+function getDesiredHaulers(room: Room | undefined): [string, number][] {
+  if (room === undefined) return [];
+  let structures: [string, number][] = [];
 
   const controller = room.find(FIND_STRUCTURES)
     .filter(structure => structure.structureType === STRUCTURE_CONTROLLER)[0] as StructureController;
 
   const spawn = room.find(FIND_MY_SPAWNS)[0] as StructureSpawn;
 
-  if (spawn !== undefined) structures.set(spawn.id, 1);
-  if (controller !== undefined) structures.set(controller.id, 3);
+  if (spawn !== undefined) structures.push([spawn.id, 1]);
+  if (controller !== undefined) structures.push([controller.id, 3]);
 
   return structures;
 }

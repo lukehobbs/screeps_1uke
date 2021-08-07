@@ -11,10 +11,10 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
 
   const creepsWithRole = _.countBy(Game.creeps, "memory.role");
 
-  if (creepsWithRole[HARVESTER] == 0) {
+  if ((creepsWithRole[HARVESTER] ?? 0) == 0) {
     return harvester;
   }
-  if (creepsWithRole[HAULER] === 0) {
+  if ((creepsWithRole[HAULER] ?? 0) === 0) {
     return hauler;
   }
 
