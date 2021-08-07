@@ -25,6 +25,11 @@ const BASE_CREEP_BODY = [WORK, CARRY, MOVE];
 export const getCreepBody = (role: string): BodyPartConstant[] => {
   const spawn = _.first(_.values(Game.spawns) as StructureSpawn[]);
 
+  if ((spawn.room.find(FIND_MY_CREEPS)?.length ?? 0) <= 2) {
+    log.debug(`Next creep bodyparts: ${JSON.stringify(BASE_CREEP_BODY)}`);
+    return BASE_CREEP_BODY;
+  }
+
   let energyAvailable = (spawn.room.energyAvailable ?? 0);
   if (role == HARVESTER && energyAvailable >= bodyCost(BEST_HARVESTER_BODY)) {
     log.debug(`Next creep bodyparts: ${JSON.stringify(BEST_HARVESTER_BODY)}`);
@@ -41,6 +46,5 @@ export const getCreepBody = (role: string): BodyPartConstant[] => {
     return BEST_BUILDER_BODY
   }
 
-  log.debug(`Next creep bodyparts: ${JSON.stringify(BASE_CREEP_BODY)}`);
-  return BASE_CREEP_BODY;
+  return [];
 };

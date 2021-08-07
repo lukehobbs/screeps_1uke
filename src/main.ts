@@ -10,6 +10,15 @@ import { CreepMemory } from "./types/types";
 import { log } from "./utils/log";
 import { workHandler } from "./work/handler";
 
+// TODO:
+//    1. Better control of creep assignments (should assign creep to closest unassigned work target)
+//    2. Road builder creep (should track commonly used paths and build roads along them)
+//    3. Better control over creep body parts (should determine needed bodyparts by comparing existing creep's parts with desired efficiency (based on room structures))
+//    4. Containers need some more attention
+//    5. Repairing
+//    6. Make all creeps move to the water cooler before starting job (avoid traffic jams near spawn tunnel)
+//    13/2. Refactor creep spawning so no creeps are assigned jobs until they reach the water cooler
+//    7. Expand to more rooms
 const init = (room: Room) => {
   const energySources = getEnergySources(room);
   log.debug(`Energy sources: ${JSON.stringify(energySources)}`);

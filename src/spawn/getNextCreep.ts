@@ -1,3 +1,4 @@
+import { HARVESTER, HAULER } from "../constants";
 import { SpawnCreepParams } from "../types/types";
 import { maybeGetNextBuilder } from "./maybeGetNextBuilder";
 import { maybeGetNextHarvester } from "./maybeGetNextHarvester";
@@ -7,6 +8,15 @@ export const getNextCreep = (spawn?: StructureSpawn | undefined, dryRun: boolean
   const harvester = maybeGetNextHarvester(spawn, dryRun);
   const hauler = maybeGetNextHauler(spawn, dryRun);
   const builder = maybeGetNextBuilder(spawn, dryRun);
+
+  const creepsWithRole = _.countBy(Game.creeps, "memory.role");
+
+  if (creepsWithRole[HARVESTER] == 0) {
+    return harvester;
+  }
+  if (creepsWithRole[HAULER] === 0) {
+    return hauler;
+  }
 
   return harvester ?? hauler ?? builder;
 };

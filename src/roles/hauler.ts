@@ -11,17 +11,27 @@ export const execute = (creep: Creep): void => {
 
   const extensions = ((_.values(Game.structures) as OwnedStructure[])
     .filter(s => s.structureType === STRUCTURE_EXTENSION) as StructureExtension[])
-    .filter(s => s.store.getUsedCapacity(RESOURCE_ENERGY) === 0 && (creepsWithTarget[s?.id as string] ?? 0) === 0);
+    .filter(s => s.store.getFreeCapacity(RESOURCE_ENERGY) != 0 && (creepsWithTarget[s?.id as string] ?? 0) === 0);
+
+  const creepsWorkingExtensions = _.filter(Game.creeps, (c: Creep) => {
+    const mem = (c.memory as CreepMemory);
+    if (mem.working === undefined) {
+      return false;
+    }
+    else return extensions.map(x => x.id).includes(mem.working as Id<StructureExtension>);
+  });
 
   if (spawn.store.getFreeCapacity(RESOURCE_ENERGY) !== 0) {
     if ((creepsWithTarget[spawn.id] ?? 0) === 0) {
       creepMemory.working = spawn.id;
     }
   }
-
-  if (extensions.length !== 0) {
-    creepMemory.working = extensions[0].id;
+  else {
+    if (_.size(Game.creeps) !== 0 && extensions.length !== 0 && creepsWorkingExtensions.length < 3) {
+      creepMemory.working = extensions[0].id;
+    }
   }
+
 
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     // log.action("Unloading", creep);
@@ -32,7 +42,7 @@ export const execute = (creep: Creep): void => {
     creepMemory.unloading = false;
   }
 
-  if (creepMemory.working === (controller[0]?.id ?? "controller") && (creepsWithTarget[controller[0]?.id] ?? 0) < 5) {
+  if (creepMemory.working === (controller[0]?.id ?? "controller") && (creepsWithTarget[controller[0]?.id] ?? 0) > 5) {
     creepMemory.working = undefined;
   }
 
@@ -42,25 +52,19 @@ export const execute = (creep: Creep): void => {
       creepMemory.working = spawn.id;
     }
     else {
-
-      if (extensions.length !== 0) {
+      if (extensions.length !== 0 && (creepsWorkingExtensions.length < 2)) {
         log.action("Assigned to extension", creep);
         creepMemory.working = extensions[0]?.id;
         return;
       }
-      else {
-        const controller = creep.room.find(FIND_STRUCTURES).filter(s => s.structureType === STRUCTURE_CONTROLLER);
-        if (controller.length !== 0) {
-          log.action("Assigned to controller", creep);
-          creepMemory.working = controller[0]?.id;
-          return;
-        }
-        else {
-          creepMemory.working = undefined;
-        }
+      const controller = creep.room.find(FIND_STRUCTURES).filter(s => s.structureType === STRUCTURE_CONTROLLER);
+      if (controller.length !== 0) {
+        log.action("Assigned to controller", creep);
+        creepMemory.working = controller[0]?.id;
+        return;
       }
+      creepMemory.working = undefined;
     }
-
   }
   if (creepMemory.pickupTarget) {
     if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
@@ -120,7 +124,8 @@ export const execute = (creep: Creep): void => {
         creepMemory.pickupTarget = undefined;
         creepMemory.unloading = false;
       }
-    } else {
+    }
+    else {
       creepMemory.unloading = false;
     }
   }
