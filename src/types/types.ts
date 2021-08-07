@@ -1,10 +1,35 @@
 export import CreepMemory = NodeJS.CreepMemory;
 export import Global = NodeJS.Global;
 export import Memory = NodeJS.Memory;
+export import RoomMemory = NodeJS.RoomMemory;
+export import WorkDetails = NodeJS.WorkDetails;
+export import CommonPaths = NodeJS.CommonPaths;
 
 export declare namespace NodeJS {
   interface Global {
     log: string;
+  }
+
+  interface RoomMemory {
+    planned: boolean | undefined;
+    spawn: [string, RoomPosition] | undefined;
+    paths: CommonPaths;
+    work: WorkDetails;
+    bootstrapped: boolean | undefined;
+  }
+
+  interface WorkDetails {
+    sources: [string, RoomPosition][] | undefined;
+    controllers: [string, RoomPosition][] | undefined;
+    numSources: number | undefined;
+    outputPartsPerSource: [string, number][] | undefined;
+    outputParts: number | undefined;
+  }
+
+  interface CommonPaths {
+    spawnToSources: PathStep[][] | undefined;
+    spawnToControllers: PathStep[][] | undefined;
+    sourcesToControllers: PathStep[][] | undefined;
   }
 
   interface Memory {

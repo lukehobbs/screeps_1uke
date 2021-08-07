@@ -80,16 +80,18 @@ export const execute = (runner: Creep) => {
       }
     }
     const target = runner.room.find(FIND_STRUCTURES).find(s => s.id === creepMemory.working);
+    creepMemory.working = target?.id;
     if (!target) {
       log.error(`can't find target for ${runner.name}`);
+      creepMemory.working = undefined;
     } else {
       let err = runner.repair(target);
       if (err === ERR_NOT_IN_RANGE) {
         runner.travelTo(target);
+      } else if (err === ERR_NO_BODYPART) {
+        creepMemory.recycling = true;
       } else {
-        if (err === ERR_NO_BODYPART) {
-          creepMemory.recycling = true;
-        }
+        creepMemory.working = undefined;
       }
     }
   }

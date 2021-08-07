@@ -17,3 +17,8 @@ export const RED = "red";
 export const POWDER_BLUE = "powderblue";
 export const YELLOW = "yellow";
 export const DIM_GRAY = "dimgray";
+
+// Rooms
+export const ROOM_HEIGHT = 50;
+export const ROOM_WIDTH = 50;
+export const ROOM_ORIGIN = [{x: 24, y: 24}, {x: 25, y:25}];
