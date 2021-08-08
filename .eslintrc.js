@@ -40,6 +40,8 @@
 //       }
 //     ],
 //     "@typescript-eslint/no-explicit-any": "off",
+//     "@typescript-eslint/no-namespace": "off",
+//     "no-inner-declar  ations": "off",
 //     "@typescript-eslint/no-parameter-properties": "off",
 //     "@typescript-eslint/no-unused-expressions": "error",
 //     "@typescript-eslint/no-use-before-define": ["error", { functions: false }],

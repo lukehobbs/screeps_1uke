@@ -1,10 +1,3 @@
-export import CreepMemory = NodeJS.CreepMemory;
-export import Global = NodeJS.Global;
-export import Memory = NodeJS.Memory;
-export import RoomMemory = NodeJS.RoomMemory;
-export import WorkDetails = NodeJS.WorkDetails;
-export import CommonPaths = NodeJS.CommonPaths;
-
 export declare namespace NodeJS {
   interface Global {
     log: string;
@@ -12,24 +5,12 @@ export declare namespace NodeJS {
 
   interface RoomMemory {
     planned: boolean | undefined;
-    spawn: [string, RoomPosition] | undefined;
+    spawn: ScreepsObj<RoomPosition>;
     paths: CommonPaths;
     work: WorkDetails;
     bootstrapped: boolean | undefined;
-  }
-
-  interface WorkDetails {
-    sources: [string, RoomPosition][] | undefined;
-    controllers: [string, RoomPosition][] | undefined;
-    numSources: number | undefined;
-    outputPartsPerSource: [string, number][] | undefined;
-    outputParts: number | undefined;
-  }
-
-  interface CommonPaths {
-    spawnToSources: PathStep[][] | undefined;
-    spawnToControllers: PathStep[][] | undefined;
-    sourcesToControllers: PathStep[][] | undefined;
+    bootstrapping: boolean | undefined;
+    stats: RoomStats | undefined;
   }
 
   interface Memory {
@@ -50,19 +31,50 @@ export declare namespace NodeJS {
   interface CreepMemory {
     role: string | undefined;
     room: string | undefined;
-    working: string | undefined;
+    loadDest: string | undefined;
+    unloadDest: string | undefined;
+    status: WorkStatus | undefined;
     _trav: any | undefined;
     unloading: boolean | undefined;
+    loading: boolean | undefined;
     repairing: boolean | undefined;
     pickupTarget: string | undefined;
     recycling: boolean | undefined;
   }
 
-  const RESOURCE_ENERGY: ResourceConstant;
-  const FIND_SOURCES: FindConstant;
-  const WORK: BodyPartConstant;
-  const MOVE: BodyPartConstant;
-  const CARRY: BodyPartConstant;
+}
+
+export interface ScreepsObj<T> {
+  id: string;
+  obj: T;
+}
+
+export enum WorkStatus {
+  LOADING = 0,
+  UNLOADING = 1
+}
+
+export interface RoomStats {
+  lastUpdated: number;
+  output: number;
+  outputEfficiency: number;
+  maxOutput: number;
+  lastOutput: number;
+  interval: number;
+}
+
+export interface WorkDetails {
+  sources: ScreepsObj<RoomPosition>[];
+  controllers: ScreepsObj<RoomPosition>[];
+  numSources: number | undefined;
+  openSpacesPerSource: ScreepsObj<number>[];
+  outputParts: number | undefined;
+}
+
+export interface CommonPaths {
+  spawnToSources: RoomPosition[][];
+  spawnToControllers: RoomPosition[][];
+  sourcesToControllers: RoomPosition[][];
 }
 
 export interface SpawnCreepParams {
@@ -70,3 +82,8 @@ export interface SpawnCreepParams {
   name: string;
   opts?: SpawnOptions;
 }
+
+export import CreepMemory = NodeJS.CreepMemory;
+export import Global = NodeJS.Global;
+export import Memory = NodeJS.Memory;
+export import RoomMemory = NodeJS.RoomMemory;

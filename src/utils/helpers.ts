@@ -1,11 +1,3 @@
-export const distanceBetween = (a: RoomPosition, b: RoomPosition): number => {
-  if (a === undefined || b === undefined) {
-    // TODO: handle this better
-    return 200;
-  }
-  return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
-};
-
 export const bodyCost = (body: BodyPartConstant[]): number => {
   let sum = 0;
   for (let i in body)

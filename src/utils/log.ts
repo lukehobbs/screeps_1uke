@@ -1,4 +1,4 @@
-import { DIM_GRAY, POWDER_BLUE, RED, WHITE, YELLOW } from "../constants";
+import { DIM_GRAY, GREEN, POWDER_BLUE, RED, WHITE, YELLOW } from "../constants";
 
 export const log = {
   colored: (color: string, msg: string): string => `<span style="color:${color}">${msg}</span>`,
@@ -11,7 +11,8 @@ export const log = {
   warning: (msg: any): void => log.print(log.colored(YELLOW, msg)),
   debug: (msg: any): void => log.print(log.colored(DIM_GRAY, msg)),
   getTickstamp: (): string => log.colored(DIM_GRAY, `[${Game.time}]`),
-  print: (msg: any): void => console.log(`${log.getTickstamp()} ${msg}`)
+  print: (msg: any): void => console.log(`${log.getTickstamp()} ${msg}`),
+  success: (msg: any): void => log.print(log.colored(GREEN, msg))
 };
 
 const padCreepName = (name?: string): string => {
