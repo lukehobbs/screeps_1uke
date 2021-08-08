@@ -4,7 +4,7 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import { cleanupMemory } from "./memory/cleanupMemory";
 import { RoomMemory } from "./types/types";
 import RoomPlanner from "./RoomPlanner";
-import RoomManager from "./RoomManager/RoomManager";
+import { runCreepTask } from "./Tasks/runCreepTask";
 
 export const loop = ErrorMapper.wrapLoop(() => {
   cleanupMemory();
@@ -17,6 +17,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
       RoomPlanner.plan(room, roomMemory);
     }
 
-    RoomManager.manage(room);
+    for (const creep in Game.creeps) {
+      runCreepTask(Game.creeps[creep]);
+    }
   }
 });
