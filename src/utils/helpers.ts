@@ -1,10 +1,3 @@
-export const bodyCost = (body: BodyPartConstant[]): number => {
-  let sum = 0;
-  for (let i in body)
-    sum += BODYPART_COST[body[i]];
-  return sum;
-};
-
 export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
   const adjacentTiles: RoomPosition[] = [];
 

@@ -28,18 +28,18 @@ namespace RoomPlanner {
     };
   };
 
-  const spawn = (room: Room, roomMemory: RoomMemory): ScreepsObj<RoomPosition> => (
-    roomMemory?.spawn ??
-    _.map(room.find(FIND_MY_SPAWNS), s => {
-      return { id: s.id, obj: s.pos } as ScreepsObj<RoomPosition>;
-    })[0]
-  );
+  const spawn = (room: Room, roomMemory: RoomMemory): ScreepsObj<RoomPosition> => {
+    return roomMemory?.spawn ??
+      _.map(room.find(FIND_MY_SPAWNS), s => {
+        return { id: s.id, obj: s.pos } as ScreepsObj<RoomPosition>;
+      })[0];
+  };
 
   export const plan = (room: Room, roomMemory: RoomMemory): void => {
     roomMemory.spawn = spawn(room, roomMemory);
     roomMemory.work = planWork(room);
     roomMemory.paths = commonPaths(roomMemory);
-    // Refresh stats every 50 ticks
+    // Refresh stats every 50 ticks by default
     const maxOutput = roomMemory.work.openSpacesPerSource.reduce((acc, cur) => acc + cur.obj * 2, 0);
     roomMemory.stats = { interval: 50, lastUpdated: Game.time, maxOutput } as RoomStats;
     // TODO: plan / create construction sites for extensions

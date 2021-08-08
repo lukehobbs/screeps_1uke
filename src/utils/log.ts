@@ -1,4 +1,10 @@
-import { DIM_GRAY, GREEN, POWDER_BLUE, RED, WHITE, YELLOW } from "../constants";
+// Colors
+const WHITE = "white";
+const RED = "red";
+const POWDER_BLUE = "powderblue";
+const YELLOW = "yellow";
+const DIM_GRAY = "dimgray";
+const GREEN = "green";
 
 export const log = {
   colored: (color: string, msg: string): string => `<span style="color:${color}">${msg}</span>`,
@@ -21,3 +27,4 @@ const padCreepName = (name?: string): string => {
   const longestName = _.last(_.sortBy(creeps, creep => creep.name.length))?.name;
   return "[".concat(name).padEnd(longestName.length + 1, " ").concat("]");
 };
+

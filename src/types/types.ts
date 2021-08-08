@@ -9,7 +9,6 @@ export declare namespace NodeJS {
     paths: CommonPaths;
     work: WorkDetails;
     bootstrapped: boolean | undefined;
-    bootstrapping: boolean | undefined;
     stats: RoomStats | undefined;
   }
 
@@ -58,6 +57,8 @@ export interface RoomStats {
   lastUpdated: number;
   output: number;
   outputEfficiency: number;
+  harvestEvents: number;
+  lastHarvestEvents: number;
   maxOutput: number;
   lastOutput: number;
   interval: number;
@@ -75,12 +76,6 @@ export interface CommonPaths {
   spawnToSources: RoomPosition[][];
   spawnToControllers: RoomPosition[][];
   sourcesToControllers: RoomPosition[][];
-}
-
-export interface SpawnCreepParams {
-  body: BodyPartConstant[];
-  name: string;
-  opts?: SpawnOptions;
 }
 
 export import CreepMemory = NodeJS.CreepMemory;

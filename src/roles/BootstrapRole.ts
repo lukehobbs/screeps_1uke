@@ -1,7 +1,45 @@
 import { CreepMemory, RoomMemory, ScreepsObj, WorkStatus } from "../types/types";
 import { log } from "../utils/log";
 
-namespace Bootstrapper {
+namespace BootstrapRole {
+
+  const Routines = {
+    loadRoutine(creep: Creep, creepMemory: CreepMemory) {
+      const source = Game.getObjectById(creepMemory.loadDest as Id<Source>);
+
+      if (!source) {
+        log.error(`Creep bootstrap routine error: no source with ID ["${creepMemory.loadDest}"] found`);
+        creepMemory.recycling = true;
+        return;
+      }
+
+      if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+        creep.travelTo(source);
+      }
+    },
+
+    unloadRoutine(creep: Creep, creepMemory: CreepMemory) {
+      const dest = Game.getObjectById(creepMemory.unloadDest as Id<Structure>);
+
+      if (!dest) {
+        log.error(`Creep bootstrap routine error: no destination with ID ["${creepMemory.loadDest}"] found`);
+        return;
+      }
+
+      if (creep.transfer(dest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.travelTo(dest);
+      }
+    },
+
+    recycleRoutine(creep: Creep) {
+      const spawn = Game.getObjectById((creep.room.memory as RoomMemory).spawn.id as Id<StructureSpawn>);
+
+      if (spawn?.recycleCreep(creep) === ERR_NOT_IN_RANGE) {
+        creep.travelTo(spawn);
+      }
+    }
+  };
+
   const inventoryIsEmpty = (creep: Creep) => creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0;
   const inventoryIsFull = (creep: Creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
 
@@ -15,9 +53,7 @@ namespace Bootstrapper {
     return _.sum(creepsWorkingThisSource, c => c.body.filter(b => b.type === WORK).length);
   }
 
-  function nextLoadDestination(creep: Creep): string | undefined {
-    const roomMemory = creep.room.memory as RoomMemory;
-
+  export function nextLoadDestination(roomMemory: RoomMemory): string | undefined {
     for (let i = 0; i < roomMemory.work.openSpacesPerSource.length; i++) {
       const s: ScreepsObj<number> = roomMemory.work.openSpacesPerSource[i];
       const creepsWorkingThisSource = creepsAssociatedWith(s.id as Id<Source>);
@@ -30,17 +66,17 @@ namespace Bootstrapper {
     return undefined;
   }
 
-  function nextUnloadDestination(creep: Creep) {
+  function nextUnloadDestination(roomMemory: RoomMemory) {
     // TODO: include extensions / containers if re-bootstrapping a room w/ these structures
-    return (creep.room.memory as RoomMemory).spawn.id;
+    return roomMemory.spawn.id;
   }
 
   function init(creepMemory: CreepMemory, creep: Creep) {
     if (!creepMemory.unloadDest) {
-      creepMemory.unloadDest = nextUnloadDestination(creep);
+      creepMemory.unloadDest = nextUnloadDestination(creep.room.memory as RoomMemory);
     }
     if (!creepMemory.loadDest) {
-      creepMemory.loadDest = nextLoadDestination(creep);
+      creepMemory.loadDest = nextLoadDestination(creep.room.memory as RoomMemory);
     }
     if (inventoryIsEmpty(creep)) {
       creepMemory.status = WorkStatus.LOADING;
@@ -51,46 +87,22 @@ namespace Bootstrapper {
     }
   }
 
-  function loadRoutine(creep: Creep, creepMemory: CreepMemory) {
-    log.action("load", creep);
-    const source = Game.getObjectById(creepMemory.loadDest as Id<Source>);
-
-    if (!source) {
-      log.error(`Creep bootstrap routine error: no source with ID ["${creepMemory.loadDest}"] found`);
-      return;
-    }
-
-    if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-      creep.travelTo(source);
-    }
-  }
-
-  function unloadRoutine(creep: Creep, creepMemory: CreepMemory) {
-    log.action("unload", creep);
-    const dest = Game.getObjectById(creepMemory.unloadDest as Id<Structure>);
-
-    if (!dest) {
-      log.error(`Creep bootstrap routine error: no destination with ID ["${creepMemory.loadDest}"] found`);
-      return;
-    }
-
-    if (creep.transfer(dest, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      creep.travelTo(dest);
-    }
-  }
-
   export const control = (creep: Creep, creepMemory: CreepMemory): void => {
     init(creepMemory, creep);
 
+    if (creepMemory.recycling) {
+      Routines.recycleRoutine(creep);
+    }
+
     const creepState = creepMemory.status;
     if (creepState === WorkStatus.LOADING) {
-      loadRoutine(creep, creepMemory);
+      Routines.loadRoutine(creep, creepMemory);
     }
 
     if (creepState === WorkStatus.UNLOADING) {
-      unloadRoutine(creep, creepMemory);
+      Routines.unloadRoutine(creep, creepMemory);
     }
   };
 }
 
-export default Bootstrapper;
+export default BootstrapRole;
