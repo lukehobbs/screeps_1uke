@@ -1,4 +1,4 @@
-import { CreepMemory, RoomMemory, RoomStats } from "./types/types";
+import { CreepMemory, RoomMemory, RoomStats } from "../Types/types";
 
 namespace RoomStatistics {
   function energyHarvestedInLastTick(room: Room) {

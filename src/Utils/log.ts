@@ -8,7 +8,7 @@ const GREEN = "green";
 
 export const log = {
   colored: (color: string, msg: string): string => `<span style="color:${color}">${msg}</span>`,
-  action: (msg: any, creep?: Creep): void => {
+  option: (msg: any, creep?: Creep): void => {
     !!creep ? log.print(log.colored(POWDER_BLUE, `${padCreepName(creep.name)} ${msg}`))
       : log.print(log.colored(POWDER_BLUE, msg));
   },

@@ -1,5 +1,3 @@
-import { IContext } from "./Action";
-
 export class Score {
   description: string;
   fun: (context: IContext) => number;

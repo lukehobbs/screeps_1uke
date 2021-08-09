@@ -1,4 +1,4 @@
-import { CommonPaths } from "./types/types";
+import { CommonPaths } from "../Types/types";
 
 namespace RoomVisuals {
   const drawPath = (room: Room, path: RoomPosition[]): void => {

@@ -1,3 +1,15 @@
+declare global {
+  interface RoomMemory {
+    planned: boolean | undefined;
+    spawn: ScreepsObj<RoomPosition>;
+    paths: CommonPaths;
+    work: WorkDetails;
+    bootstrapped: boolean | undefined;
+    stats: RoomStats | undefined;
+  }
+}
+
+
 export declare namespace NodeJS {
   interface Global {
     log: string;

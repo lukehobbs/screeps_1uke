@@ -1,9 +1,9 @@
-import { Task } from "../Task";
+import { Action } from "./Action";
 import { Score } from "./Score";
 
-export interface IAction {
+export interface IOption {
   id: string;
-  task: Task;
+  action: Action;
 
   scores: Score[];
   condition: (context: IContext) => boolean;
@@ -13,10 +13,7 @@ export interface IAction {
   validateScore(score: number): void;
 }
 
-export interface IContext {
-}
-
-export abstract class Action implements IAction {
+export abstract class Option implements IOption {
   protected constructor(id: string, scores: Score[]) {
     this.id = id;
     this.scores = scores;
@@ -24,21 +21,25 @@ export abstract class Action implements IAction {
 
   condition: (context: IContext) => boolean = () => true;
 
+  abstract action: Action;
+
+  id: string;
+  scores: Score[];
+
   eval(context: IContext): number {
     if (!this.condition(context)) {
       return -Infinity;
     }
 
-    return this.scores
+    let score = this.scores
       .map(_score => {
         return this.validateScore(_score.fun(context));
       })
       .reduce((acc, s) => acc + s, 0);
-  }
 
-  id: string;
-  scores: Score[];
-  abstract task: Task;
+    console.log(`[${context.creep.name}:${this.id}] Score: ${score}`);
+    return score;
+  }
 
   validateScore(score: number): number {
     if (!isNaN(score)) return score;

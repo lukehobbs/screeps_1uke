@@ -1,12 +1,9 @@
-import { Score } from "../../../../src/Tasks/Actions/Score";
+import { Score } from "../../../../src/UtilityAi/Score";
 import { assert } from "chai";
-
-export interface IContext {
-}
 
 describe("Score", () => {
   it("should store a description and a function that returns a number", () => {
-    const results = new Score("screep is spawning", (context: IContext): number => {
+    const results = new Score("screep is spawning", (): number => {
       return 11;
     });
 

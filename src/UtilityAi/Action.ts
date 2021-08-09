@@ -1,25 +1,25 @@
 // Heavily inspired by github.com/glitchassassin/screeps
 // And this lecture on behavior trees https://edirlei.com/aulas/game-ai-2020/GAME_AI_Lecture_08_Behavior_Trees_2020.html
 
-export enum TaskStatus {
+export enum ActionStatus {
   NONE = "none",
   SUCCESS = "success",
   FAILURE = "failure",
   RUNNING = "running"
 }
 
-export abstract class Task {
-  public status: TaskStatus;
-  protected children: Task[];
+export abstract class Action {
+  public status: ActionStatus;
+  protected children: Action[];
 
   protected constructor() {
     this.children = [];
-    this.status = TaskStatus.NONE;
+    this.status = ActionStatus.NONE;
   }
 
-  public addChild(task: Task) {
+  public addChild(task: Action) {
     this.children.push(task);
   }
 
-  public abstract run(strategy: any, creep: Creep): TaskStatus;
+  public abstract run(creep: Creep): ActionStatus;
 }
