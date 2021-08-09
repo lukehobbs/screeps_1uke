@@ -76,6 +76,7 @@
     "screeps-profiler": "^2.0.1",
     "source-map": "~0.6.1",
     "traveler": "^0.1.0",
-    "typed-screeps": "^2.5.3"
+    "typed-screeps": "^2.5.3",
+    "utility-ai": "0.0.3"
   }
 }
