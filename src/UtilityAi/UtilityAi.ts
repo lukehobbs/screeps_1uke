@@ -16,6 +16,10 @@ declare global {
   interface CreepMemory {
     _trav: any;
   }
+
+  interface RoomMemory {
+    lastSpawned: number;
+  }
 }
 
 interface IUtilityAi {

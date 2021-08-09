@@ -40,6 +40,7 @@ class SpawnCreepAction extends Action {
     const err = spawn.spawnCreep(this.type.body, this.type.name, this.type.opts);
 
     if (err === OK) {
+      context.room.memory.lastSpawned = Game.time;
       return ActionStatus.SUCCESS;
     } else {
       log.error(err);
