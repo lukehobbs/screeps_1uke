@@ -20,8 +20,8 @@ namespace RoomPlanner {
     return adjacentTiles;
   };
 
-  const openSpacesPerSource = (terrain: RoomTerrain, pos: RoomPosition): number => {
-    return getAdjacentTiles(pos).filter(({ x, y }) => terrain.get(x, y) === 0).length;
+  const openSpacesPerSource = (terrain: RoomTerrain, pos: RoomPosition): RoomPosition[] => {
+    return getAdjacentTiles(pos).filter(({ x, y }) => terrain.get(x, y) === 0);
   };
 
   const commonPaths = (roomMemory: RoomMemory): CommonPaths => {
@@ -55,7 +55,7 @@ namespace RoomPlanner {
     roomMemory.work = planWork(room);
     roomMemory.paths = commonPaths(roomMemory);
     // Refresh stats every 50 ticks by default
-    const maxOutput = roomMemory.work.openSpacesPerSource.reduce((acc, cur) => acc + cur.obj * 2, 0);
+    const maxOutput = roomMemory.work.openSpacesPerSource.reduce((acc, cur) => acc + cur.obj.length * 2, 0);
     roomMemory.stats = { interval: 50, lastUpdated: Game.time, maxOutput } as RoomStats;
     // TODO: plan / create construction sites for extensions
     RoomVisuals.drawCommonPaths(room, roomMemory.paths);
@@ -86,7 +86,7 @@ namespace RoomPlanner {
       return {
         id: s.id,
         obj: openSpacesPerSource(terrain, s.obj)
-      } as ScreepsObj<number>;
+      } as ScreepsObj<RoomPosition[]>;
     });
 
     return work;

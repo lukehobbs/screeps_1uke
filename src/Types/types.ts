@@ -80,7 +80,7 @@ export interface WorkDetails {
   sources: ScreepsObj<RoomPosition>[];
   controllers: ScreepsObj<RoomPosition>[];
   numSources: number | undefined;
-  openSpacesPerSource: ScreepsObj<number>[];
+  openSpacesPerSource: ScreepsObj<RoomPosition[]>[];
   outputParts: number | undefined;
 }
 

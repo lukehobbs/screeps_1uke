@@ -1,4 +1,22 @@
 import { IOption } from "./Option";
+import { RoomStats } from "../Types/types";
+
+declare global {
+  interface IContext {
+    creep: Creep;
+    room: Room;
+    roomStats: RoomStats;
+    spawn: StructureSpawn;
+  }
+
+  interface Creep {
+    memory: CreepMemory;
+  }
+
+  interface CreepMemory {
+    _trav: any;
+  }
+}
 
 interface IUtilityAi {
   name: string;

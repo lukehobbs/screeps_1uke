@@ -22,12 +22,12 @@ class MoveAction<T extends HasPos> extends Action {
     this.destinationId = destinationId;
   }
 
-  run(creep: Creep): ActionStatus {
+  run(context: IContext): ActionStatus {
     const dest = Game.getObjectById(this.destinationId as Id<T>);
 
     if (!dest) return ActionStatus.FAILURE;
 
-    const err = creep.travelTo(dest);
+    const err = context.creep.travelTo(dest);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;

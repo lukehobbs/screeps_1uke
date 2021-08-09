@@ -2,8 +2,8 @@ import { Option } from "../../UtilityAi/Option";
 import { Action, ActionStatus } from "../../UtilityAi/Action";
 import { RESOURCE_ENERGY } from "../../../test/unit/constants";
 
-export abstract class TransferOption<T extends HasPos> extends Option {
-  action: TransferAction<T>;
+export abstract class TransferOption extends Option {
+  action: TransferAction;
 
   protected constructor(id: string, destinationId: string, resourceType: ResourceConstant) {
     super(id, []);
@@ -11,7 +11,7 @@ export abstract class TransferOption<T extends HasPos> extends Option {
   }
 }
 
-export class TransferAction<T extends HasPos> extends Action {
+export class TransferAction extends Action {
   private readonly resourceType: ResourceConstant;
   private readonly targetId?: string;
 
@@ -21,12 +21,12 @@ export class TransferAction<T extends HasPos> extends Action {
     this.targetId = targetId;
   }
 
-  run(creep: Creep): ActionStatus {
+  run(context: IContext): ActionStatus {
     const target = Game.getObjectById(this.targetId as Id<any>);
 
     if (!target) return ActionStatus.FAILURE;
 
-    const err = creep.transfer(target, this.resourceType);
+    const err = context.creep.transfer(target, this.resourceType);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;

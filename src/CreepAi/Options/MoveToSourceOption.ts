@@ -19,5 +19,25 @@ export class MoveToSourceOption extends MoveOption<Source> {
     this.scores.push(new Score("free inventory space", ({ creep: { store } }: IContext): number => {
       return Number(store.getFreeCapacity(RESOURCE_ENERGY));
     }));
+
+    this.scores.push(new Score("distance from source", ({ creep }: IContext): number => {
+      const source = Game.getObjectById(destinationId as Id<Source>);
+      if (!source) return -Infinity;
+
+      return Number(!creep.pos.inRangeTo(source.pos, 8) && -25);
+    }));
+
+    this.scores.push(new Score("space to mine", ({ room}): number => {
+      const source = Game.getObjectById(destinationId as Id<Source>);
+
+      if (!source) return -Infinity;
+
+      for (let pos of room.memory.work.openSpacesPerSource.find(x => x.id === destinationId)?.obj ?? []) {
+        if (room.lookForAt(LOOK_CREEPS, room.getPositionAt(pos.x, pos.y)!).length === 0) {
+          return 50;
+        }
+      }
+      return -50;
+    }));
   }
 }

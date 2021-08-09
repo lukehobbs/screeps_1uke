@@ -3,29 +3,17 @@
 import { ErrorMapper } from "Utils/ErrorMapper";
 import { cleanupMemory } from "./Memory/cleanupMemory";
 import RoomPlanner from "./Room/RoomPlanner";
-import { MoveToSpawnOption } from "./CreepAi/Options/MoveToSpawnOption";
-import { TransferEnergyToSpawn } from "./CreepAi/Options/TransferEnergyToSpawn";
-import { MoveToSourceOption } from "./CreepAi/Options/MoveToSourceOption";
-import { CreepUtilityAi } from "./CreepAi/CreepUtilityAi";
-import { HarvestSourceOption } from "./CreepAi/Options/HarvestSourceOption";
-import { runCreepOption } from "./UtilityAi/runCreepOption";
-import { DropEnergyOption } from "./CreepAi/Options/DropEnergyOption";
-
-
-function initializeCreepOptions(ai: CreepUtilityAi, room: Room) {
-  ai.addOption(new MoveToSpawnOption(room.memory.spawn.id));
-  ai.addOption(new TransferEnergyToSpawn(room.memory.spawn.id));
-  ai.addOption(new DropEnergyOption());
-
-  for (let source of room.memory.work.sources) {
-    ai.addOption(new MoveToSourceOption(source.id));
-    ai.addOption(new HarvestSourceOption(source.id));
-  }
-}
+import { CreepUtilityAi, initializeCreepOptions } from "./CreepAi/CreepUtilityAi";
+import { runOption } from "./UtilityAi/runOption";
+import { initializeSpawnOptions, SpawnUtilityAi } from "./SpawnAi/SpawnUtilityAi";
+import RoomStatistics from "./Room/RoomStats";
+import updateStats = RoomStatistics.updateStats;
+import { RoomStats } from "./Types/types";
 
 export const loop = ErrorMapper.wrapLoop(() => {
   cleanupMemory();
 
+  const spawnUtilityAi = new SpawnUtilityAi("spawn-ai");
   const creepUtilityAi = new CreepUtilityAi("creep-ai");
 
   for (const roomsKey in Game.rooms) {
@@ -36,16 +24,24 @@ export const loop = ErrorMapper.wrapLoop(() => {
       RoomPlanner.plan(room, roomMemory);
     }
 
+    if (Game.time - (roomMemory.stats?.lastUpdated ?? 0) >= (roomMemory.stats?.interval ?? 50))
+      updateStats(room, roomMemory.stats as RoomStats);
+
+    initializeSpawnOptions(spawnUtilityAi);
+    const spawn = Game.getObjectById(room.memory.spawn.id);
+    const spawnContext = { room, spawn, roomStats: roomMemory.stats } as IContext;
+    const spawnOption = spawnUtilityAi.bestOption(spawnContext);
+    console.log(spawnOption.id);
+
+    runOption(spawnContext, spawnOption);
+
     initializeCreepOptions(creepUtilityAi, room);
-
     for (const creep in Game.creeps) {
-      const context = { creep: Game.creeps[creep], room: room } as IContext;
+      const creepContext = { creep: Game.creeps[creep], room, spawn } as IContext;
+      const creepOption = creepUtilityAi.bestOption(creepContext);
+      // console.log(creepOption.id);
 
-      const option = creepUtilityAi.bestOption(context);
-
-      console.log(option.id);
-
-      runCreepOption(Game.creeps[creep], room, option);
+      runOption(creepContext, creepOption);
     }
   }
 });

@@ -9,9 +9,7 @@ export class DropEnergyOption extends DropResourceOption {
 
     this.scores = [];
 
-    this.scores.push(new Score("spawn is full", ({ room }): number => {
-      const spawn = Game.getObjectById(room.memory.spawn.id as Id<StructureSpawn>);
-
+    this.scores.push(new Score("spawn is full", ({ spawn }): number => {
       return Number((spawn?.store.getFreeCapacity(RESOURCE_ENERGY) === 0) && 200);
     }));
 

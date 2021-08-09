@@ -17,7 +17,7 @@ namespace RoomStatistics {
     const harvestingCreeps: Creep[] = _.filter(_.values(Game.creeps), (c: Creep) => {
       return _.some(sourceObjs, s => {
         const travelState = (c.memory as CreepMemory)?._trav?.state;
-        const travelDestination = travelState ? new RoomPosition(travelState[4], travelState[5], s.room.name) : undefined;
+        const travelDestination = travelState ? room.getPositionAt(travelState[4], travelState[5]) : undefined;
         const sourceIsDestination = travelDestination
           ? travelDestination.x === s.pos.x && travelDestination.y === s.pos.y && travelDestination.roomName === s.room.name
           : false;

@@ -19,8 +19,8 @@ class DropAction extends Action {
     this.resourceType = resourceType ?? RESOURCE_ENERGY;
   }
 
-  run(creep: Creep): ActionStatus {
-    const err = creep.drop(this.resourceType);
+  run(context: IContext): ActionStatus {
+    const err = context.creep.drop(this.resourceType);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;

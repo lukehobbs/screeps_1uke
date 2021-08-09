@@ -5,9 +5,9 @@ export class Sequence extends Action {
     super();
   }
 
-  run(creep: Creep): ActionStatus {
+  run(context: IContext): ActionStatus {
     for (let child of super.children) {
-      const childStatus = child.run(creep);
+      const childStatus = child.run(context);
       if (childStatus === ActionStatus.SUCCESS) {
         continue;
       }

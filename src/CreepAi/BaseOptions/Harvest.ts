@@ -18,12 +18,12 @@ export class HarvestAction<T extends HasPos> extends Action {
     this.targetId = targetId;
   }
 
-  run(creep: Creep): ActionStatus {
+  run(context: IContext): ActionStatus {
     const target = Game.getObjectById(this.targetId as Id<any>);
 
     if (!target) return ActionStatus.FAILURE;
 
-    const err = creep.harvest(target);
+    const err = context.creep.harvest(target);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;
