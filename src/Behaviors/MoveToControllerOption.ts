@@ -33,5 +33,17 @@ export class MoveToControllerOption extends MoveOption<StructureController> {
       }
       return 0;
     }));
+
+    this.scores.push(new Score("no one else near controller", ({ creep, room }): number => {
+      const controller = Game.getObjectById(destinationId as Id<StructureController>);
+
+      if (!controller) return -Infinity;
+
+      const { x, y } = controller.pos;
+
+      const creepsNearController = room.lookForAtArea(LOOK_CREEPS, y - 3, x - 3, y + 3, x + 3, true).length;
+
+      return creepsNearController === 0 ? 50 : 0;
+    }));
   }
 }

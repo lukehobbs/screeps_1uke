@@ -9,9 +9,11 @@ import { initializeSpawnOptions, SpawnUtilityAi } from "./SpawnUtilityAi";
 import RoomStatistics from "./Room/RoomStats";
 import updateStats = RoomStatistics.updateStats;
 import { RoomStats } from "./Types/types";
+import { log } from "./Utils/log";
 
 export const loop = ErrorMapper.wrapLoop(() => {
   cleanupMemory();
+  log.debug(`----${Game.time}----`);
 
   const spawnUtilityAi = new SpawnUtilityAi("spawn-ai");
   const creepUtilityAi = new CreepUtilityAi("creep-ai");
@@ -31,18 +33,13 @@ export const loop = ErrorMapper.wrapLoop(() => {
     const spawn = Game.getObjectById(room.memory.spawn.id);
     const spawnContext = { room, spawn, roomStats: roomMemory.stats } as IContext;
     const spawnOption = spawnUtilityAi.bestOption(spawnContext);
-    // console.log(spawnOption.id);
-
     runOption(spawnContext, spawnOption);
 
     initializeCreepOptions(creepUtilityAi, room);
     for (const creep in Game.creeps) {
       const creepContext = { creep: Game.creeps[creep], room, spawn } as IContext;
       const creepOption = creepUtilityAi.bestOption(creepContext);
-      if (creep === "Mamie")
-        console.log(creepOption.id);
-      // console.log(creepOption.id);
-
+      log.action(creepOption.id, Game.creeps[creep]);
       runOption(creepContext, creepOption);
     }
   }

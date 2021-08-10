@@ -14,7 +14,7 @@ export class HarvestEnergyOption extends HarvestOption<Source> {
 
     this.scores.push(new Score("distance to source", ({ creep }: IContext): number => {
       const sourcePos = Game.getObjectById(destinationId as Id<Source>)?.pos;
-      return Number((sourcePos ? creep.pos.isNearTo(sourcePos) : true) && 200);
+      return Number((sourcePos ? creep.pos.isNearTo(sourcePos) : true) && 300);
     }));
   }
 }

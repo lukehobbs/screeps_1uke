@@ -59,25 +59,23 @@ namespace RoomPlanner {
     roomMemory.stats = { interval: 50, lastUpdated: Game.time, maxOutput } as RoomStats;
     // TODO: plan / create construction sites for extensions
     RoomVisuals.drawCommonPaths(room, roomMemory.paths);
-    console.log("Test");
+    createConstructionSites(room);
     log.info(`Finished planning Room ${room.name}`);
     roomMemory.planned = true;
   };
 
   function createConstructionSites(room: Room) {
-    const { spawnToSources, sourcesToControllers, spawnToControllers } = room.memory.paths;
-
-    for (let path of spawnToSources) {
+    for (let path of room.memory.paths?.spawnToSources) {
       for (let { x, y } of path) {
         room.createConstructionSite(room.getPositionAt(x, y)!, STRUCTURE_ROAD);
       }
     }
-    for (let path of sourcesToControllers) {
+    for (let path of room.memory.paths?.sourcesToControllers) {
       for (let { x, y } of path) {
         room.createConstructionSite(room.getPositionAt(x, y)!, STRUCTURE_ROAD);
       }
     }
-    for (let path of spawnToControllers) {
+    for (let path of room.memory.paths?.spawnToControllers) {
       for (let { x, y } of path) {
         room.createConstructionSite(room.getPositionAt(x, y)!, STRUCTURE_ROAD);
       }
@@ -109,7 +107,6 @@ namespace RoomPlanner {
       } as ScreepsObj<RoomPosition[]>;
     });
 
-    createConstructionSites(room);
     return work;
   }
 }
