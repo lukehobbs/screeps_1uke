@@ -1,5 +1,4 @@
-import { Action, ActionStatus } from "../UtilityAi/Action";
-import { log } from "../Utils/log";
+import { Action, ActionStatus } from "../../UtilityAi/Action";
 
 export class CreepType {
   body: BodyPartConstant[];
@@ -33,7 +32,6 @@ export class SpawnCreepAction extends Action {
       context.room.memory.lastSpawned = Game.time;
       return ActionStatus.SUCCESS;
     } else {
-      log.error(err);
       return ActionStatus.FAILURE;
     }
   }

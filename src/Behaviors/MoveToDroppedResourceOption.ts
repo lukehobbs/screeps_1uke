@@ -1,5 +1,5 @@
 import { Score } from "../UtilityAi/Score";
-import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./MoveOption";
+import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./GenericOptions/MoveOption";
 
 export class MoveToDroppedResourceOption extends MoveOption<Resource> {
   constructor(destinationId: string) {

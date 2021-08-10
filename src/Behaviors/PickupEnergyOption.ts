@@ -1,5 +1,5 @@
-import { PickupOption } from "./PickupOption";
-import { inventoryIsFull } from "./MoveOption";
+import { PickupOption } from "./GenericOptions/PickupOption";
+import { inventoryIsFull } from "./GenericOptions/MoveOption";
 import { Score } from "../UtilityAi/Score";
 
 export class PickupEnergyOption extends PickupOption {
@@ -9,7 +9,7 @@ export class PickupEnergyOption extends PickupOption {
     this.scores = [];
 
     this.scores.push(new Score("spawn is full", ({ spawn }): number => {
-      return Number((spawn?.store.getFreeCapacity(RESOURCE_ENERGY) === 0) && 100);
+      return Number((spawn?.store.getFreeCapacity(RESOURCE_ENERGY) === 0) && 150);
     }));
 
     this.scores.push(new Score("inventory is full", ({ creep }: IContext): number => {

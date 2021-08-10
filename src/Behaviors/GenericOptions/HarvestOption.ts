@@ -1,5 +1,5 @@
-import { Option } from "../UtilityAi/Option";
-import { HarvestAction } from "./HarvestAction";
+import { Option } from "../../UtilityAi/Option";
+import { HarvestAction } from "../Actions/HarvestAction";
 
 export abstract class HarvestOption<T extends HasPos> extends Option {
   action: HarvestAction<T>;

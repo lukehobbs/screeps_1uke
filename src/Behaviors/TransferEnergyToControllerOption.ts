@@ -1,7 +1,7 @@
 import { Score } from "../UtilityAi/Score";
-import { inventoryIsEmpty, inventoryIsFull } from "./MoveOption";
+import { inventoryIsEmpty, inventoryIsFull } from "./GenericOptions/MoveOption";
 import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { TransferOption } from "./TransferOption";
+import { TransferOption } from "./GenericOptions/TransferOption";
 
 export class TransferEnergyToControllerOption extends TransferOption {
   constructor(destinationId: string) {

@@ -1,10 +1,14 @@
 import { Score } from "../UtilityAi/Score";
 import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./MoveOption";
+import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./GenericOptions/MoveOption";
 
 export class MoveToSpawnOption extends MoveOption<StructureSpawn> {
   constructor(destinationId: string) {
     super(`Move to spawn ${destinationId}`, destinationId);
+
+    this.condition = (context): boolean => {
+      return context.spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
+    };
 
     this.scores = [];
 

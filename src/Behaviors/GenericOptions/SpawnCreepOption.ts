@@ -1,5 +1,5 @@
-import { Option } from "../UtilityAi/Option";
-import { CreepType, SpawnCreepAction } from "./SpawnCreepAction";
+import { Option } from "../../UtilityAi/Option";
+import { CreepType, SpawnCreepAction } from "../Actions/SpawnCreepAction";
 
 export abstract class SpawnCreepOption extends Option {
   action: SpawnCreepAction;

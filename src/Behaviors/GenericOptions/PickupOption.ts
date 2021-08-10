@@ -1,5 +1,5 @@
-import { Option } from "../UtilityAi/Option";
-import { PickupAction } from "./PickupAction";
+import { Option } from "../../UtilityAi/Option";
+import { PickupAction } from "../Actions/PickupAction";
 
 export abstract class PickupOption extends Option {
   action: PickupAction;

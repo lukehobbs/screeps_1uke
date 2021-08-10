@@ -1,8 +1,8 @@
 import { Score } from "../UtilityAi/Score";
 import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { SpawnCreepOption } from "./SpawnCreepOption";
+import { SpawnCreepOption } from "./GenericOptions/SpawnCreepOption";
 import random_name from "node-random-name";
-import { CreepType } from "./SpawnCreepAction";
+import { CreepType } from "./Actions/SpawnCreepAction";
 
 export class SpawnBaseCreepOption extends SpawnCreepOption {
   constructor() {

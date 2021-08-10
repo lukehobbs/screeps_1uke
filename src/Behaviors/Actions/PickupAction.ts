@@ -1,4 +1,4 @@
-import { Action, ActionStatus } from "../UtilityAi/Action";
+import { Action, ActionStatus } from "../../UtilityAi/Action";
 
 export class PickupAction extends Action {
   private readonly destinationId: string;

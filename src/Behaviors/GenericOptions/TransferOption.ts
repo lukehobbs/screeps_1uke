@@ -1,5 +1,5 @@
-import { Option } from "../UtilityAi/Option";
-import { TransferAction } from "./TransferAction";
+import { Option } from "../../UtilityAi/Option";
+import { TransferAction } from "../Actions/TransferAction";
 
 export abstract class TransferOption extends Option {
   action: TransferAction;

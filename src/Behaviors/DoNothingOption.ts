@@ -1,6 +1,6 @@
 import { Option } from "../UtilityAi/Option";
 import { Score } from "../UtilityAi/Score";
-import { DoNothingAction } from "./DoNothingAction";
+import { DoNothingAction } from "./Actions/DoNothingAction";
 
 
 export class DoNothingOption extends Option {

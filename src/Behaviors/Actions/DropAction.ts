@@ -1,5 +1,5 @@
-import { Action, ActionStatus } from "../UtilityAi/Action";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
+import { Action, ActionStatus } from "../../UtilityAi/Action";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
 
 export class DropAction extends Action {
   resourceType: ResourceConstant;

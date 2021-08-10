@@ -1,6 +1,5 @@
 import { Score } from "../UtilityAi/Score";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./MoveOption";
+import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./GenericOptions/MoveOption";
 
 export class MoveToControllerOption extends MoveOption<StructureController> {
   constructor(destinationId: string) {

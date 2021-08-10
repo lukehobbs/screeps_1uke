@@ -1,10 +1,14 @@
 import { Score } from "../UtilityAi/Score";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { inventoryIsEmpty, inventoryIsFull, MoveOption } from "./MoveOption";
+import { MoveOption } from "./GenericOptions/MoveOption";
 
 export class MoveToSourceOption extends MoveOption<Source> {
   constructor(destinationId: string) {
     super(`Move to source ${destinationId}`, destinationId);
+
+    this.condition = ({creep}): boolean => {
+      const source = Game.getObjectById(destinationId as Id<Source>);
+      return !source?.pos.isNearTo(creep.pos) ?? false
+    }
 
     this.scores = [];
 

@@ -1,5 +1,5 @@
-import { Action, ActionStatus } from "../UtilityAi/Action";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
+import { Action, ActionStatus } from "../../UtilityAi/Action";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
 
 export class TransferAction extends Action {
   private readonly resourceType: ResourceConstant;

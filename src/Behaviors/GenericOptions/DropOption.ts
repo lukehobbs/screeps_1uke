@@ -1,6 +1,6 @@
-import { Option } from "../UtilityAi/Option";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { DropAction } from "./DropAction";
+import { Option } from "../../UtilityAi/Option";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
+import { DropAction } from "../Actions/DropAction";
 
 export abstract class DropOption extends Option {
   action: DropAction;
