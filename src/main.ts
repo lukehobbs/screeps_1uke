@@ -3,9 +3,9 @@
 import { ErrorMapper } from "Utils/ErrorMapper";
 import { cleanupMemory } from "./Memory/cleanupMemory";
 import RoomPlanner from "./Room/RoomPlanner";
-import { CreepUtilityAi, initializeCreepOptions } from "./CreepAi/CreepUtilityAi";
+import { CreepUtilityAi, initializeCreepOptions } from "./CreepUtilityAi";
 import { runOption } from "./UtilityAi/runOption";
-import { initializeSpawnOptions, SpawnUtilityAi } from "./SpawnAi/SpawnUtilityAi";
+import { initializeSpawnOptions, SpawnUtilityAi } from "./SpawnUtilityAi";
 import RoomStatistics from "./Room/RoomStats";
 import updateStats = RoomStatistics.updateStats;
 import { RoomStats } from "./Types/types";
@@ -31,7 +31,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     const spawn = Game.getObjectById(room.memory.spawn.id);
     const spawnContext = { room, spawn, roomStats: roomMemory.stats } as IContext;
     const spawnOption = spawnUtilityAi.bestOption(spawnContext);
-    console.log(spawnOption.id);
+    // console.log(spawnOption.id);
 
     runOption(spawnContext, spawnOption);
 

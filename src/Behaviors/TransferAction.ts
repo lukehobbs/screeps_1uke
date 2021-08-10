@@ -1,15 +1,5 @@
-import { Option } from "../../UtilityAi/Option";
-import { Action, ActionStatus } from "../../UtilityAi/Action";
-import { RESOURCE_ENERGY } from "../../../test/unit/constants";
-
-export abstract class TransferOption extends Option {
-  action: TransferAction;
-
-  protected constructor(id: string, destinationId: string, resourceType: ResourceConstant) {
-    super(id, []);
-    this.action = new TransferAction(destinationId, resourceType);
-  }
-}
+import { Action, ActionStatus } from "../UtilityAi/Action";
+import { RESOURCE_ENERGY } from "../../test/unit/constants";
 
 export class TransferAction extends Action {
   private readonly resourceType: ResourceConstant;
@@ -26,7 +16,7 @@ export class TransferAction extends Action {
 
     if (!target) return ActionStatus.FAILURE;
 
-    const err = context.creep.transfer(target, this.resourceType);
+    const err = context.creep.transfer(target as AnyStructure, this.resourceType);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;
@@ -35,4 +25,3 @@ export class TransferAction extends Action {
     }
   }
 }
-

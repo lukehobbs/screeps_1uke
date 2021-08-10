@@ -1,6 +1,5 @@
-import { Option } from "../../UtilityAi/Option";
-import { Action, ActionStatus } from "../../UtilityAi/Action";
-import { log } from "../../Utils/log";
+import { Action, ActionStatus } from "../UtilityAi/Action";
+import { log } from "../Utils/log";
 
 export class CreepType {
   body: BodyPartConstant[];
@@ -14,16 +13,7 @@ export class CreepType {
   }
 }
 
-export abstract class SpawnCreepOption extends Option {
-  action: SpawnCreepAction;
-
-  protected constructor(id: string, creepType: CreepType) {
-    super(id, []);
-    this.action = new SpawnCreepAction(creepType);
-  }
-}
-
-class SpawnCreepAction extends Action {
+export class SpawnCreepAction extends Action {
   private readonly type: CreepType;
 
   constructor(type: CreepType) {
@@ -48,4 +38,3 @@ class SpawnCreepAction extends Action {
     }
   }
 }
-

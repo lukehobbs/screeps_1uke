@@ -1,6 +1,6 @@
-import { UtilityAi } from "../UtilityAi/UtilityAi";
-import { SpawnBaseCreepOption } from "./Options/SpawnBaseCreepOption";
-import { DoNothingOption } from "./BaseOptions/DoNothing";
+import { UtilityAi } from "./UtilityAi/UtilityAi";
+import { SpawnBaseCreepOption } from "./Behaviors/SpawnBaseCreepOption";
+import { DoNothingOption } from "./Behaviors/DoNothingOption";
 
 export class SpawnUtilityAi extends UtilityAi {
 }

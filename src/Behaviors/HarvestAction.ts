@@ -1,14 +1,4 @@
-import { Action, ActionStatus } from "../../UtilityAi/Action";
-import { Option } from "../../UtilityAi/Option";
-
-export abstract class HarvestOption<T extends HasPos> extends Option {
-  action: HarvestAction<T>;
-
-  protected constructor(id: string, destinationId: string) {
-    super(id, []);
-    this.action = new HarvestAction(destinationId);
-  }
-}
+import { Action, ActionStatus } from "../UtilityAi/Action";
 
 export class HarvestAction<T extends HasPos> extends Action {
   private readonly targetId?: string;
@@ -32,4 +22,3 @@ export class HarvestAction<T extends HasPos> extends Action {
     }
   }
 }
-

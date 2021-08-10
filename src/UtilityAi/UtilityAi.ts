@@ -50,7 +50,11 @@ export abstract class UtilityAi implements IUtilityAi {
         score: a.eval(context)
       })), option => option.score).id;
 
-    return _.find(this.options, option => option.id === bestId)!;
+    let best = _.find(this.options, option => option.id === bestId)!;
+    if (context?.creep?.name === "Adalberto") {
+      console.log(`[${context.creep.name}:${best.id}]}`);
+    }
+    return best;
   }
 
   public name: string;
