@@ -7,17 +7,15 @@ export class TransferEnergyToSpawnOption extends TransferOption {
   constructor(destinationId: string) {
     super(`Transfer ${RESOURCE_ENERGY} to spawn ${destinationId}`, destinationId, RESOURCE_ENERGY);
 
-    this.scores = [];
+    this.condition = (context => context.spawn.store.getFreeCapacity(RESOURCE_ENERGY) !== 0)
 
-    this.scores.push(new Score("spawn is full", ({ spawn }: IContext): number => {
-      return Number((spawn.store.getFreeCapacity(RESOURCE_ENERGY) ===0 && -Infinity));
-    }));
+    this.scores = [];
 
     this.scores.push(new Score("not near to spawn", ({ creep, spawn }: IContext): number => {
       return Number(!(creep.pos.getRangeTo(spawn.pos) === 1) && -Infinity);
     }));
 
-    this.scores.push(new Score("not near to spawn", ({ creep, spawn }: IContext): number => {
+    this.scores.push(new Score("near to spawn", ({ creep, spawn }: IContext): number => {
       return Number((creep.pos.getRangeTo(spawn.pos) === 1) && 300);
     }));
 

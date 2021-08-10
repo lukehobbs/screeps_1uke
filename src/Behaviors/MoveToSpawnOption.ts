@@ -6,11 +6,15 @@ export class MoveToSpawnOption extends MoveOption<StructureSpawn> {
   constructor(destinationId: string) {
     super(`Move to spawn ${destinationId}`, destinationId);
 
-    this.condition = (context): boolean => {
-      return context.spawn.store.getFreeCapacity(RESOURCE_ENERGY) === 0;
+    this.condition = ({ spawn: { store } }): boolean => {
+      return !(store.getFreeCapacity(RESOURCE_ENERGY) === 0);
     };
 
     this.scores = [];
+
+    this.scores.push(new Score("distance from spawn", ({ creep, spawn }: IContext): number => {
+      return -5 * creep.pos.getRangeTo(spawn.pos);
+    }));
 
     this.scores.push(new Score("inventory is full", ({ creep }: IContext): number => {
       return Number(inventoryIsFull(creep) && 100);

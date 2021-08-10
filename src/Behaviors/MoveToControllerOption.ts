@@ -5,7 +5,17 @@ export class MoveToControllerOption extends MoveOption<StructureController> {
   constructor(destinationId: string) {
     super(`Move to controller ${destinationId}`, destinationId);
 
+    this.condition = ({ creep }): boolean => inventoryIsFull(creep);
+
     this.scores = [];
+
+    this.scores.push(new Score("upgrade events last tick", (context => {
+      const eventLog = context.room.getEventLog();
+
+      const upgradeEvents = eventLog.filter(e => e.event === EVENT_UPGRADE_CONTROLLER);
+
+      return -1 * upgradeEvents.length;
+    })))
 
     this.scores.push(new Score("inventory is full", ({ creep }: IContext): number => {
       return Number(inventoryIsFull(creep) && 175);
@@ -22,11 +32,6 @@ export class MoveToControllerOption extends MoveOption<StructureController> {
         }
       }
       return 0;
-    }));
-
-    this.scores.push(new Score("distance from controller", ({ creep }: IContext): number => {
-      const dest = Game.getObjectById(destinationId as Id<StructureController>);
-      return Number(creep.pos.isNearTo(dest!) && -50);
     }));
   }
 }

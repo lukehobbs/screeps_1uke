@@ -9,6 +9,7 @@ import { MoveToControllerOption } from "./Behaviors/MoveToControllerOption";
 import { MoveToDroppedResourceOption } from "./Behaviors/MoveToDroppedResourceOption";
 import { DoNothingOption } from "./Behaviors/DoNothingOption";
 import { PickupEnergyOption } from "./Behaviors/PickupEnergyOption";
+import { BuildConstructionSiteOption } from "./Behaviors/BuildConstructionSiteOption";
 
 export class CreepUtilityAi extends UtilityAi {
 }
@@ -32,5 +33,9 @@ export const initializeCreepOptions = (ai: CreepUtilityAi, room: Room) => {
   for (let resource of room.find(FIND_DROPPED_RESOURCES)) {
     ai.addOption(new MoveToDroppedResourceOption(resource.id));
     ai.addOption(new PickupEnergyOption(resource.id));
+  }
+
+  for (let constructionSite of room.find(FIND_CONSTRUCTION_SITES)) {
+    ai.addOption(new BuildConstructionSiteOption(constructionSite.id));
   }
 };

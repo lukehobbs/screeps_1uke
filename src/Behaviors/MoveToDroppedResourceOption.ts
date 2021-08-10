@@ -5,11 +5,9 @@ export class MoveToDroppedResourceOption extends MoveOption<Resource> {
   constructor(destinationId: string) {
     super(`Move to dropped resource ${destinationId}`, destinationId);
 
-    this.scores = [];
+    this.condition = (({ creep }) => !inventoryIsFull(creep));
 
-    this.scores.push(new Score("inventory is full", ({ creep }: IContext): number => {
-      return Number(inventoryIsFull(creep) && -Infinity);
-    }));
+    this.scores = [];
 
     this.scores.push(new Score("inventory is empty", ({ creep }: IContext): number => {
       return Number(inventoryIsEmpty(creep) && 150);

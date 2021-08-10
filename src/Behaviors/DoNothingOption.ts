@@ -9,7 +9,7 @@ export class DoNothingOption extends Option {
   constructor() {
     super("do-nothing", []);
     this.action = new DoNothingAction();
-    this.scores.push(new Score("default", (): number => 0));
+    this.scores.push(new Score("default", (): number => -1));
   }
 }
 

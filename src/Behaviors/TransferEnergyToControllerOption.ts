@@ -7,6 +7,14 @@ export class TransferEnergyToControllerOption extends TransferOption {
   constructor(destinationId: string) {
     super(`Transfer ${RESOURCE_ENERGY} to controller ${destinationId}`, destinationId, RESOURCE_ENERGY);
 
+    this.condition = (({ creep }) => {
+      const dest = Game.getObjectById(destinationId as Id<StructureController>);
+
+      if (!dest) return false;
+
+      return creep.pos.inRangeTo(dest.pos, 2);
+    });
+
     this.scores = [];
 
     this.scores.push(new Score("inventory is full", ({ creep }: IContext): number => {
@@ -17,13 +25,10 @@ export class TransferEnergyToControllerOption extends TransferOption {
       return Number(inventoryIsEmpty(creep) && -Infinity);
     }));
 
-    this.scores.push(new Score("proximity to controller", ({ creep, room }: IContext): number => {
-      for (let controller of room.memory.work.controllers) {
-        if (creep.pos.inRangeTo(controller.obj, 2)) {
-          return 500;
-        }
-      }
-      return -Infinity;
+    this.scores.push(new Score("proximity to controller", ({ creep}: IContext): number => {
+      const controller = Game.getObjectById(destinationId as Id<StructureController>);
+
+      return controller && creep.pos.inRangeTo(controller.pos, 2) ? 500 : -Infinity;
     }));
   }
 }

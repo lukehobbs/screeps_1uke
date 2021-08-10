@@ -39,6 +39,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
     for (const creep in Game.creeps) {
       const creepContext = { creep: Game.creeps[creep], room, spawn } as IContext;
       const creepOption = creepUtilityAi.bestOption(creepContext);
+      if (creep === "Mamie")
+        console.log(creepOption.id);
       // console.log(creepOption.id);
 
       runOption(creepContext, creepOption);
