@@ -28,7 +28,8 @@ export default {
     resolve({ rootDir: "src" }),
     commonjs({
       namedExports: {
-        "node_modules/node-random-name/lib/index.js": ["getName"]
+        "node_modules/node-random-name/lib/index.js": ["getName"],
+        "node_modules/utility-ai/UtilityAi.js": ["UtilityAi"]
       }
     }),
     typescript({ tsconfig: "./tsconfig.json" }),
