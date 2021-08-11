@@ -14,16 +14,12 @@ export class SpawnBaseCreepOption extends SpawnCreepOption {
 
     this.scores = [];
 
-    this.scores.push(new Score("spawn cooldown", ({ room: { memory: { lastSpawned } } }: IContext): number => {
-      return Number(Game.time - lastSpawned < 120 && -100);
-    }));
+    this.condition = ({ spawn: { spawning }, room: { memory: { lastSpawned } } }) => {
+      return (Game.time - lastSpawned) > 120 && !spawning;
+    };
 
     this.scores.push(new Score("inventory is full", ({ spawn }: IContext): number => {
       return Number(spawn?.store.getFreeCapacity(RESOURCE_ENERGY) === 0 && 100);
-    }));
-
-    this.scores.push(new Score("is busy spawning", ({ spawn: { spawning } }: IContext): number => {
-      return Number(spawning && -200);
     }));
 
     this.scores.push(new Score("extension(s) exist", ({ room }: IContext): number => {

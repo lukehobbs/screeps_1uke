@@ -6,7 +6,7 @@ export class Selector extends Action {
   }
 
   run(context: IContext): ActionStatus {
-    for (let child of super.children) {
+    for (let child of this.children) {
       const childStatus = child.run(context);
       if (childStatus === ActionStatus.FAILURE) {
         continue;

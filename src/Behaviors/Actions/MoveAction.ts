@@ -13,6 +13,8 @@ export class MoveAction<T extends HasPos> extends Action {
 
     if (!dest) return ActionStatus.FAILURE;
 
+    if (context.creep.pos.isNearTo(dest.pos)) return ActionStatus.FAILURE;
+
     const err = context.creep.travelTo(dest);
 
     if (err === OK) {

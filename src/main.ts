@@ -7,9 +7,9 @@ import { CreepUtilityAi, initializeCreepOptions } from "./CreepUtilityAi";
 import { runOption } from "./UtilityAi/runOption";
 import { initializeSpawnOptions, SpawnUtilityAi } from "./SpawnUtilityAi";
 import RoomStatistics from "./Room/RoomStats";
-import updateStats = RoomStatistics.updateStats;
 import { RoomStats } from "./Types/types";
 import { log } from "./Utils/log";
+import updateStats = RoomStatistics.updateStats;
 
 export const loop = ErrorMapper.wrapLoop(() => {
   cleanupMemory();
@@ -37,10 +37,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
     initializeCreepOptions(creepUtilityAi, room);
     for (const creep in Game.creeps) {
+      if (Game.creeps[creep].spawning) continue;
+
       const creepContext = { creep: Game.creeps[creep], room, spawn } as IContext;
       const creepOption = creepUtilityAi.bestOption(creepContext);
       log.action(creepOption.id, Game.creeps[creep]);
-      runOption(creepContext, creepOption);
+      runOption(creepContext, creepOption, true);
     }
   }
 });

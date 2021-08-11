@@ -1,12 +1,12 @@
 import { Option } from "../../UtilityAi/Option";
-import { HarvestAction } from "../Actions/HarvestAction";
+import { MineAction } from "../Actions/MineAction";
 
 export abstract class HarvestOption<T extends HasPos> extends Option {
-  action: HarvestAction<T>;
+  action: MineAction<T>;
 
   protected constructor(id: string, destinationId: string) {
     super(id, []);
-    this.action = new HarvestAction(destinationId);
+    this.action = new MineAction(destinationId);
   }
 }
 

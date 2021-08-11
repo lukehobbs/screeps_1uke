@@ -1,5 +1,6 @@
 import { Action } from "./Action";
 import { Score } from "./Score";
+import { log } from "../Utils/log";
 
 export interface IOption {
   id: string;
@@ -41,9 +42,9 @@ export abstract class Option implements IOption {
     //   console.log(`[${context.spawn.id}:${this.id}] Score: ${score}`);
     // }
 
-    // if (context?.creep?.name === "Adalberto") {
-    //   console.log(`[${context.creep.name}:${this.id}] Score: ${score}`);
-    // }
+    if (context?.creep && this.id !== "") {
+      log.action(`${this.id}\tScore: ${score}`, context.creep);
+    }
 
     return score;
   }
