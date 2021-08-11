@@ -19,7 +19,7 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
 
       if (!controller) return -Infinity;
 
-      return (25 - creep.pos.getRangeTo(controller.pos)) / 25;
+      return (50 - creep.pos.getRangeTo(controller.pos)) / 50;
     }));
   }
 }

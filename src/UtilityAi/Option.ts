@@ -38,6 +38,8 @@ export abstract class Option implements IOption {
       })
       .reduce((acc, s) => acc + s, 0);
 
+    score = score / this.scores.length;
+
     // if (!context.creep) {
     //   console.log(`[${context.spawn.id}:${this.id}] Score: ${score}`);
     // }

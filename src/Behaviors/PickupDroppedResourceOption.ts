@@ -12,7 +12,15 @@ export class PickupDroppedResourceOption extends PickupSelector {
     this.scores = [];
 
     this.scores.push(new Score("inventory is empty", ({ creep }: IContext): number => {
-      return (75 - creep.store.getUsedCapacity(RESOURCE_ENERGY)) / 75;
+      return (50 - creep.store.getUsedCapacity(RESOURCE_ENERGY)) / 75;
+    }));
+
+    this.scores.push(new Score("proximity to resource", ({ creep }: IContext): number => {
+      const dest = Game.getObjectById(destinationId as Id<Resource>);
+
+      if (!dest) return 0;
+
+      return (25 - creep.pos.getRangeTo(dest.pos)) / 25;
     }));
   }
 }

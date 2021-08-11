@@ -14,12 +14,12 @@ export class FillSpawnOption extends FillSpawnSelector {
     this.scores = [];
 
     this.scores.push(new Score("energy onboard", ({ creep: { store } }: IContext): number => {
-      return (50 - store.getUsedCapacity(RESOURCE_ENERGY)) / 50;
+      return (25 - store.getUsedCapacity(RESOURCE_ENERGY)) / 25;
     }));
 
     this.scores.push(new Score("proximity to spawn", ({ creep, spawn }): number => {
       // (MAX_RANGE - ACTUAL) / MAX_RANGE ~ y = -x
-      return (50 - creep.pos.getRangeTo(spawn.pos)) / 50;
+      return (25 - creep.pos.getRangeTo(spawn.pos)) / 25;
     }));
   }
 }

@@ -28,7 +28,7 @@ export class MineOption extends MineSelector {
       if (!dest) return -Infinity;
 
       // (MAX_RANGE - ACTUAL) / MAX_RANGE ~ y = -x
-      return (50 - creep.pos.getRangeTo(dest.pos)) / 50;
+      return (125 - creep.pos.getRangeTo(dest.pos)) / 125;
     }));
   }
 }
