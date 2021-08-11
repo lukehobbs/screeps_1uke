@@ -1,5 +1,4 @@
 import { Score } from "../UtilityAi/Score";
-import { inventoryIsFull } from "./GenericOptions/MoveOption";
 import { PickupSelector } from "./Selectors/PickupSelector";
 import { RESOURCE_ENERGY } from "../../test/unit/constants";
 
@@ -7,7 +6,7 @@ export class PickupDroppedResourceOption extends PickupSelector {
   constructor(destinationId: string) {
     super(destinationId);
 
-    this.condition = (({ creep }) => !inventoryIsFull(creep));
+    this.condition = (({ creep }) => !(creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0));
 
     this.scores = [];
 
