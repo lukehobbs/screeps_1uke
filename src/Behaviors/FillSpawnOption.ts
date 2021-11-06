@@ -13,13 +13,23 @@ export class FillSpawnOption extends FillSpawnSelector {
 
     this.scores = [];
 
+    this.scores.push(new Score("i'm the only creep", (): number => {
+      return (_.size(_.values(Game.creeps))) == 1 ? 1.5 : 0
+    }));
+
+    this.scores.push(new Score("energy in spawn", ({spawn: { store }}: IContext): number => {
+      const capacity = store.getCapacity(RESOURCE_ENERGY);
+      return (capacity - store.getUsedCapacity(RESOURCE_ENERGY)) / capacity;
+    }));
+
     this.scores.push(new Score("energy onboard", ({ creep: { store } }: IContext): number => {
-      return (25 - store.getUsedCapacity(RESOURCE_ENERGY)) / 25;
+      return (50 - store.getFreeCapacity(RESOURCE_ENERGY)) / 50;
     }));
 
     this.scores.push(new Score("proximity to spawn", ({ creep, spawn }): number => {
       // (MAX_RANGE - ACTUAL) / MAX_RANGE ~ y = -x
-      return (25 - creep.pos.getRangeTo(spawn.pos)) / 25;
+      const val =  (2 - creep.pos.getRangeTo(spawn.pos)) / 2;
+      return val < 0 ? 0 : val;
     }));
   }
 }

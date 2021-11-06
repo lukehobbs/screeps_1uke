@@ -6,12 +6,12 @@ export class PickupDroppedResourceOption extends PickupSelector {
   constructor(destinationId: string) {
     super(destinationId);
 
-    this.condition = (({ creep }) => !(creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0));
+    this.condition = ({ creep }) => creep.store.getFreeCapacity(RESOURCE_ENERGY) !== 0;
 
     this.scores = [];
 
     this.scores.push(new Score("inventory is empty", ({ creep }: IContext): number => {
-      return (50 - creep.store.getUsedCapacity(RESOURCE_ENERGY)) / 75;
+      return creep.store.getFreeCapacity(RESOURCE_ENERGY) / creep.store.getCapacity(RESOURCE_ENERGY);
     }));
 
     this.scores.push(new Score("proximity to resource", ({ creep }: IContext): number => {
@@ -19,7 +19,7 @@ export class PickupDroppedResourceOption extends PickupSelector {
 
       if (!dest) return 0;
 
-      return (25 - creep.pos.getRangeTo(dest.pos)) / 25;
+      return ((25 - creep.pos.getRangeTo(dest.pos)) / 25) *.1;
     }));
   }
 }

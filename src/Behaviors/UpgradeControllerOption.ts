@@ -21,5 +21,9 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
 
       return (50 - creep.pos.getRangeTo(controller.pos)) / 50;
     }));
+
+    this.scores.push(new Score("spawn energy", ({ spawn }) => {
+      return spawn.store.getFreeCapacity(RESOURCE_ENERGY) < 150 ? -.25 : 0;
+    }));
   }
 }

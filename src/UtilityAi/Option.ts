@@ -34,6 +34,7 @@ export abstract class Option implements IOption {
 
     let score = this.scores
       .map(_score => {
+        // console.log(`${_score.description} score: ${this.validateScore(_score.fun(context))}`)
         return this.validateScore(_score.fun(context));
       })
       .reduce((acc, s) => acc + s, 0);
@@ -45,7 +46,7 @@ export abstract class Option implements IOption {
     // }
 
     if (context?.creep && this.id !== "") {
-      log.action(`${this.id}\tScore: ${score}`, context.creep);
+      log.action(`${this.id.padEnd(32, " ")}\tScore: ${score}`, context.creep);
     }
 
     return score;

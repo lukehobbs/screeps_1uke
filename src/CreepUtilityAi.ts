@@ -4,6 +4,7 @@ import { MineOption } from "./Behaviors/MineOption";
 import { UpgradeControllerOption } from "./Behaviors/UpgradeControllerOption";
 import { PickupDroppedResourceOption } from "./Behaviors/PickupDroppedResourceOption";
 import { DoNothingOption } from "./Behaviors/DoNothingOption";
+import { BuildOption } from "./Behaviors/BuildOption";
 
 export class CreepUtilityAi extends UtilityAi {
 }
@@ -26,7 +27,7 @@ export const initializeCreepOptions = (ai: CreepUtilityAi, room: Room) => {
     ai.addOption(new PickupDroppedResourceOption(resource.id));
   }
 
-  // for (let constructionSite of room.find(FIND_CONSTRUCTION_SITES)) {
-  //   ai.addOption(new BuildConstructionSiteOption(constructionSite.id));
-  // }
+  for (let constructionSite of room.find(FIND_CONSTRUCTION_SITES)) {
+    ai.addOption(new BuildOption(constructionSite.id));
+  }
 };

@@ -6,8 +6,12 @@ export class DoNothingOption extends Option {
   action: DoNothingAction;
 
   constructor() {
-    super("", []);
+    super("do-nothing", []);
     this.action = new DoNothingAction();
+  }
+
+  eval(context: IContext): number {
+    return -1;
   }
 }
 

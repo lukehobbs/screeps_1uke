@@ -16,6 +16,10 @@ export const log = {
   error: (msg: any): void => log.print(log.colored(RED, msg)),
   warning: (msg: any): void => log.print(log.colored(YELLOW, msg)),
   debug: (msg: any): void => log.print(log.colored(DIM_GRAY, msg)),
+  debugAction: (msg: any, creep?: Creep): void => {
+    !!creep ? log.print(log.colored(DIM_GRAY, `${padCreepName(creep.name)} ${msg}`))
+      : log.print(log.colored(DIM_GRAY, msg));
+  },
   getTickstamp: (): string => log.colored(DIM_GRAY, `[${Game.time}]`),
   print: (msg: any): void => console.log(`${log.getTickstamp()} ${msg}`),
   success: (msg: any): void => log.print(log.colored(GREEN, msg))

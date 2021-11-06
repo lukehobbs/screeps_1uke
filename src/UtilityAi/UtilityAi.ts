@@ -44,17 +44,19 @@ export abstract class UtilityAi implements IUtilityAi {
   }
 
   bestOption(context: IContext): IOption {
-    const bestId = _.max(this.options
-      .map(a => ({
+    const optionsMap = this.options.map(a => ({
         id: a.id,
         score: a.eval(context)
-      })), option => option.score).id;
+      }));
+    // const cleanOptionsMap = optionsMap.filter((value) : boolean => {
+    //   return value.score !== -Infinity && value.score > 0;
+    // });
+    // if (cleanOptionsMap !== []) {
+      // console.log(JSON.stringify(cleanOptionsMap, null, 2))
+    // }
+    const bestId = _.max(optionsMap, option => option.score).id;
 
-    let best = _.find(this.options, option => option.id === bestId)!;
-    if (context?.creep?.name === "Adalberto") {
-      console.log(`[${context.creep.name}:${best.id}]}`);
-    }
-    return best;
+    return _.find(this.options, option => option.id === bestId)!;
   }
 
   public name: string;
