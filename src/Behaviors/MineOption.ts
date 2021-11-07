@@ -42,6 +42,7 @@ export class MineOption extends MineSelector {
       const bottom = _.max(openSpaces.map(pos => pos.y))
       const left = _.min(openSpaces.map(pos => pos.x))
       const right = _.max(openSpaces.map(pos => pos.x))
+
       return (numSpaces - room.lookForAtArea(LOOK_CREEPS, top, left, bottom, right, true).length) / numSpaces;
     }));
   }

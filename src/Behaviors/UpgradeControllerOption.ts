@@ -11,7 +11,7 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
     this.scores = [];
 
     this.scores.push(new Score("", ({ creep }) => {
-      return (75 - creep.store.getFreeCapacity(RESOURCE_ENERGY)) / 75;
+      return creep.store.getUsedCapacity(RESOURCE_ENERGY) / creep.store.getCapacity(RESOURCE_ENERGY);
     }));
 
     this.scores.push(new Score("proximity to controller", ({ creep }) => {
@@ -23,7 +23,7 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
     }));
 
     this.scores.push(new Score("spawn energy", ({ spawn }) => {
-      return spawn.store.getFreeCapacity(RESOURCE_ENERGY) < 150 ? -.25 : 0;
+      return spawn.store.getFreeCapacity(RESOURCE_ENERGY) < 150 ? -.5 : 0;
     }));
   }
 }

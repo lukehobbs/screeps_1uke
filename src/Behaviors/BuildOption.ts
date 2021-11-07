@@ -17,11 +17,19 @@ export class BuildOption extends BuildSelector {
     this.scores = [];
 
     this.scores.push(new Score("i'm next to a construction site", ({ creep }): number => {
-      const dest = Game.getObjectById(this.destinationId as Id<Source>);
+      const dest = Game.getObjectById(this.destinationId as Id<ConstructionSite>);
 
       if (!dest) return -Infinity;
 
       return creep.pos.getRangeTo(dest.pos) <= 1 ? .1 : 0
+    }));
+
+    this.scores.push(new Score("this is a construction site for an extension", (): number => {
+      const dest = Game.getObjectById(this.destinationId as Id<StructureExtension>);
+
+      if (!dest) return -Infinity;
+
+      return dest.structureType === STRUCTURE_EXTENSION ? 1 : 0;
     }));
   }
 }
