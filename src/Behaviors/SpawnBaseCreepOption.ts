@@ -15,7 +15,7 @@ export class SpawnBaseCreepOption extends SpawnCreepOption {
     this.scores = [];
 
     this.condition = ({ spawn: { spawning }, room: { memory: { lastSpawned } } }) => {
-      return (Game.time - lastSpawned) > 120 && !spawning;
+      return !lastSpawned ? true : (Game.time - lastSpawned) > 120 && !spawning;
     };
 
     this.scores.push(new Score("inventory is full", ({ spawn }: IContext): number => {
