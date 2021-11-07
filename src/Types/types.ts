@@ -32,7 +32,6 @@ export declare namespace NodeJS {
   }
 
   interface CreepMemory {
-    room: string | undefined;
     _trav: any | undefined;
   }
 

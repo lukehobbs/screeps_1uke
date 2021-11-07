@@ -38,6 +38,29 @@ namespace RoomStatistics {
     stats.output = _.min([maxEnergyThisTick, harvestedInLastTick]) ?? 0;
     stats.outputEfficiency = stats.output / stats.maxOutput;
   }
+
+  export function getCurrentMiners(sources: Source[], room: Room) {
+    return _.flatten(sources.map((source: Source): Creep[] => {
+      const top = source.pos.y - 1;
+      const bottom = source.pos.y + 1;
+      const left = source.pos.x - 1;
+      const right = source.pos.x + 1;
+
+      return room.lookForAtArea(LOOK_CREEPS, top, left, bottom, right, true).map((result): Creep => {
+        return result.creep;
+      });
+    }));
+  }
+
+  export function findWorstMiner(room: Room): Creep {
+    const sources = room.find(FIND_SOURCES)
+    const currentMiners: Creep[] = getCurrentMiners(sources, room);
+    return _.sortBy(currentMiners, (miner: Creep): number => {
+      return _.size(miner.body.filter((part: BodyPartDefinition): boolean => {
+        return part.type === WORK
+      }))
+    })[0];
+  }
 }
 
 export default RoomStatistics;

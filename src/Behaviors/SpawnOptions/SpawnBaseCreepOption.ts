@@ -7,16 +7,12 @@ import { CreepType } from "../Actions/SpawnCreepAction";
 export class SpawnBaseCreepOption extends SpawnCreepOption {
   constructor() {
     super(`Spawn base creep`, ({
-      body: [WORK, CARRY, MOVE],
+      body: [WORK, WORK, CARRY, MOVE],
       name: random_name({ first: true }),
       opts: {}
     } as CreepType));
 
     this.scores = [];
-
-    this.condition = ({ spawn: { spawning }, room: { memory: { lastSpawned } } }) => {
-      return !lastSpawned ? true : (Game.time - lastSpawned) > 120 && !spawning;
-    };
 
     this.scores.push(new Score("inventory is full", ({ spawn }: IContext): number => {
       return Number(spawn?.store.getFreeCapacity(RESOURCE_ENERGY) === 0 && 100);

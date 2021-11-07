@@ -45,5 +45,11 @@ export class MineOption extends MineSelector {
 
       return (numSpaces - room.lookForAtArea(LOOK_CREEPS, top, left, bottom, right, true).length) / numSpaces;
     }));
+
+    this.scores.push(new Score("extra work parts on creep", ({creep}: IContext): number => {
+      const workParts = creep.body.filter((part): boolean => {return part.type == WORK}).length
+
+      return 0.25 * workParts - 0.25;
+    }));
   }
 }

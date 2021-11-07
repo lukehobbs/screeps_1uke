@@ -29,7 +29,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     if (Game.time - (roomMemory.stats?.lastUpdated ?? 0) >= (roomMemory.stats?.interval ?? 50))
       updateStats(room, roomMemory.stats as RoomStats);
 
-    initializeSpawnOptions(spawnUtilityAi);
+    initializeSpawnOptions(spawnUtilityAi, room);
     const spawn = Game.getObjectById(room.memory.spawn.id);
     const spawnContext = { room, spawn, roomStats: roomMemory.stats } as IContext;
     const spawnOption = spawnUtilityAi.bestOption(spawnContext);
