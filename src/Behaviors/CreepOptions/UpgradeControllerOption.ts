@@ -1,6 +1,6 @@
-import { Score } from "../UtilityAi/Score";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { UpgradeControllerSelector } from "./Selectors/UpgradeControllerSelector";
+import { Score } from "../../UtilityAi/Score";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
+import { UpgradeControllerSelector } from "../Selectors/UpgradeControllerSelector";
 
 export class UpgradeControllerOption extends UpgradeControllerSelector {
   constructor(destinationId: string) {

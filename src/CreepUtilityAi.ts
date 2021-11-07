@@ -1,11 +1,11 @@
 import { UtilityAi } from "./UtilityAi/UtilityAi";
-import { FillSpawnOption } from "./Behaviors/FillSpawnOption";
-import { MineOption } from "./Behaviors/MineOption";
-import { UpgradeControllerOption } from "./Behaviors/UpgradeControllerOption";
-import { PickupDroppedResourceOption } from "./Behaviors/PickupDroppedResourceOption";
-import { DoNothingOption } from "./Behaviors/DoNothingOption";
-import { BuildOption } from "./Behaviors/BuildOption";
-import { GraffitiOption } from "./Behaviors/GraffitiOption";
+import { FillSpawnOption } from "./Behaviors/CreepOptions/FillSpawnOption";
+import { MineOption } from "./Behaviors/CreepOptions/MineOption";
+import { UpgradeControllerOption } from "./Behaviors/CreepOptions/UpgradeControllerOption";
+import { PickupDroppedResourceOption } from "./Behaviors/CreepOptions/PickupDroppedResourceOption";
+import { DoNothingOption } from "./Behaviors/GenericOptions/DoNothingOption";
+import { BuildOption } from "./Behaviors/CreepOptions/BuildOption";
+import { GraffitiOption } from "./Behaviors/CreepOptions/GraffitiOption";
 
 export class CreepUtilityAi extends UtilityAi {
 }

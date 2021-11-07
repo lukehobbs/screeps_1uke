@@ -1,5 +1,5 @@
-import { Score } from "../UtilityAi/Score";
-import { BuildSelector } from "./Selectors/BuildSelector";
+import { Score } from "../../UtilityAi/Score";
+import { BuildSelector } from "../Selectors/BuildSelector";
 
 export class BuildOption extends BuildSelector {
   constructor(destinationId: string) {
@@ -21,7 +21,9 @@ export class BuildOption extends BuildSelector {
 
       if (!dest) return -Infinity;
 
-      return creep.pos.getRangeTo(dest.pos) <= 1 ? .1 : 0
+      const destProgress = (dest.progress / dest.progressTotal) * 0.1
+
+      return creep.pos.getRangeTo(dest.pos) <= 1 ? destProgress : 0
     }));
 
     this.scores.push(new Score("this is a construction site for an extension", (): number => {

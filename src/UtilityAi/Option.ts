@@ -45,7 +45,7 @@ export abstract class Option implements IOption {
     //   console.log(`[${context.spawn.id}:${this.id}] Score: ${score}`);
     // }
 
-    if (context?.creep && this.id !== "") {
+    if (context?.creep && this.id !== "" && context.creep.memory.debug) {
       log.action(`${this.id.padEnd(32, " ")}\tScore: ${score}`, context.creep);
     }
 

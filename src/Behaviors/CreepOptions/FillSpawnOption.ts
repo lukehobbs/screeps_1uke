@@ -1,6 +1,6 @@
-import { Score } from "../UtilityAi/Score";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
-import { FillSpawnSelector } from "./Selectors/FillSpawnSelector";
+import { Score } from "../../UtilityAi/Score";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
+import { FillSpawnSelector } from "../Selectors/FillSpawnSelector";
 
 export class FillSpawnOption extends FillSpawnSelector {
   constructor(destinationId: string) {

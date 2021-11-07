@@ -15,6 +15,7 @@ declare global {
 
   interface CreepMemory {
     _trav: any;
+    debug: boolean;
   }
 
   interface RoomMemory {

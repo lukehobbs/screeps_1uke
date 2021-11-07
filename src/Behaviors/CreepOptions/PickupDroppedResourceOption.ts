@@ -1,6 +1,6 @@
-import { Score } from "../UtilityAi/Score";
-import { PickupSelector } from "./Selectors/PickupSelector";
-import { RESOURCE_ENERGY } from "../../test/unit/constants";
+import { Score } from "../../UtilityAi/Score";
+import { PickupSelector } from "../Selectors/PickupSelector";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
 
 export class PickupDroppedResourceOption extends PickupSelector {
   constructor(destinationId: string) {

@@ -1,5 +1,5 @@
-import { Score } from "../UtilityAi/Score";
-import { GraffitiSelector } from "./Selectors/GraffitiSelector";
+import { Score } from "../../UtilityAi/Score";
+import { GraffitiSelector } from "../Selectors/GraffitiSelector";
 
 export class GraffitiOption extends GraffitiSelector {
   constructor(destinationId: string) {

@@ -1,5 +1,5 @@
-import { Score } from "../UtilityAi/Score";
-import { MineSelector } from "./Selectors/MineSelector";
+import { Score } from "../../UtilityAi/Score";
+import { MineSelector } from "../Selectors/MineSelector";
 
 export class MineOption extends MineSelector {
   constructor(destinationId: string) {
