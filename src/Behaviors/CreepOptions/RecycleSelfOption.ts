@@ -28,5 +28,9 @@ export class RecycleSelfOption extends RecycleSelector {
         return 0;
       }
     }));
+
+    this.scores.push(new Score("manual trigger", ({creep}: IContext): number => {
+      return creep.memory.recycling ? 100 : 0;
+    }));
   }
 }

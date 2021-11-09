@@ -16,6 +16,7 @@ declare global {
   interface CreepMemory {
     _trav: any;
     debug: boolean;
+    recycling: boolean;
   }
 
   interface RoomMemory {
@@ -49,12 +50,12 @@ export abstract class UtilityAi implements IUtilityAi {
         id: a.id,
         score: a.eval(context)
       }));
-    // const cleanOptionsMap = optionsMap.filter((value) : boolean => {
-    //   return value.score !== -Infinity && value.score > 0;
-    // });
-    // if (cleanOptionsMap !== []) {
-      // console.log(JSON.stringify(cleanOptionsMap, null, 2))
-    // }
+    const cleanOptionsMap = optionsMap.filter((value) : boolean => {
+      return value.score > 0;//value.score !== -Infinity;
+    });
+    if (cleanOptionsMap !== [] && context.creep && context.creep.memory.debug) {
+      console.log(JSON.stringify(cleanOptionsMap, null, 2))
+    }
     const bestId = _.max(optionsMap, option => option.score).id;
 
     return _.find(this.options, option => option.id === bestId)!;

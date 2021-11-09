@@ -21,9 +21,7 @@ export class BuildOption extends BuildSelector {
 
       if (!dest) return -Infinity;
 
-      const destProgress = (dest.progress / dest.progressTotal) * 0.1
-
-      return creep.pos.getRangeTo(dest.pos) <= 1 ? destProgress : 0
+      return (5 - creep.pos.getRangeTo(dest.pos)) / 5;
     }));
 
     this.scores.push(new Score("this is a construction site for an extension", (): number => {

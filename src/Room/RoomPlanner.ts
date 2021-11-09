@@ -88,9 +88,9 @@ namespace RoomPlanner {
 
     work.sources = _.sortBy(room.find(FIND_SOURCES), s => {
       const roomMemory = room.memory as RoomMemory;
-      const spawnPosition = roomMemory.spawn.obj;
+      const spawnPosition = roomMemory?.spawn?.obj;
       return s ? Traveler.findTravelPath(s.pos, { pos: spawnPosition }).cost : -1;
-    }).map(s => ({ id: s.id, obj: s.pos } as ScreepsObj<RoomPosition>));
+    })?.map(s => ({ id: s.id, obj: s.pos } as ScreepsObj<RoomPosition>));
 
     work.controllers = room
       .find(FIND_STRUCTURES)

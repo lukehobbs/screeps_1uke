@@ -10,7 +10,7 @@ export abstract class SpawnCreepOption extends Option {
     this.action = new SpawnCreepAction(creepType);
     this.creepType = creepType;
     this.condition = ({ spawn: { spawning }, room: { memory: { lastSpawned } } }) => {
-      return !lastSpawned ? true : (Game.time - lastSpawned) > 120 && !spawning;
+      return !lastSpawned ? true : (Game.time - lastSpawned) > 60 && !spawning;
     };
   }
 }

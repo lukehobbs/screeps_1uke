@@ -22,18 +22,20 @@ export class MineOption extends MineSelector {
 
     this.scores = [];
 
-    this.scores.push(new Score("i'm next to a source", ({ creep }): number => {
+    this.scores.push(new Score("proximity to source", ({ creep }): number => {
       const dest = Game.getObjectById(this.destinationId as Id<Source>);
 
       if (!dest) return -Infinity;
 
-      return creep.pos.getRangeTo(dest.pos) == 1 ? 1 : 0
+      return (50 - creep.pos.getRangeTo(dest.pos)) / 50;
     }));
 
-    this.scores.push(new Score("creeps near source", ({ room}): number => {
+    this.scores.push(new Score("creeps near source", ({ creep, room}): number => {
       const dest = Game.getObjectById(this.destinationId as Id<Source>);
 
       if (!dest) return -Infinity;
+
+      if (creep.pos.isNearTo(dest.pos)) return 1;
 
       const openSpaces = room.memory.work.openSpacesPerSource.find(x => x.id === destinationId)?.obj ?? []
       const numSpaces = openSpaces.length;

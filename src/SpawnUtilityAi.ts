@@ -8,6 +8,6 @@ export class SpawnUtilityAi extends UtilityAi {
 
 export const initializeSpawnOptions = (ai: SpawnUtilityAi, room: Room) => {
   ai.addOption(new DoNothingOption());
-  ai.addOption(new SpawnBaseCreepOption());
-  ai.addOption(new SpawnMiningCreepOption(room));
+  ai.addOption(new SpawnBaseCreepOption(room));
+  // ai.addOption(new SpawnMiningCreepOption(room));
 };
