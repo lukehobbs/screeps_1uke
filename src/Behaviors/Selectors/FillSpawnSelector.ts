@@ -18,8 +18,8 @@ export class FillSpawnSelector extends Option {
   MoveOrFillSpawnSelector = (): Action => {
     const selector = new Selector();
 
-    selector.addChild(new MoveAction<StructureSpawn>(this.destinationId));
     selector.addChild(new TransferAction(this.destinationId));
+    selector.addChild(new MoveAction<StructureSpawn>(this.destinationId));
 
     return selector;
   };

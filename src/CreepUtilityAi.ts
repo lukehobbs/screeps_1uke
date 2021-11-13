@@ -2,19 +2,22 @@ import { UtilityAi } from "./UtilityAi/UtilityAi";
 import { FillSpawnOption } from "./Behaviors/CreepOptions/FillSpawnOption";
 import { MineOption } from "./Behaviors/CreepOptions/MineOption";
 import { UpgradeControllerOption } from "./Behaviors/CreepOptions/UpgradeControllerOption";
-import { PickupDroppedResourceOption } from "./Behaviors/CreepOptions/PickupDroppedResourceOption";
+import { PickupOption } from "./Behaviors/CreepOptions/PickupOption";
 import { DoNothingOption } from "./Behaviors/GenericOptions/DoNothingOption";
 import { BuildOption } from "./Behaviors/CreepOptions/BuildOption";
 import { GraffitiOption } from "./Behaviors/CreepOptions/GraffitiOption";
 import { RecycleSelfOption } from "./Behaviors/CreepOptions/RecycleSelfOption";
 import { FillExtensionOption } from "./Behaviors/CreepOptions/FillExtensionOption";
+import { AttackOption } from "./Behaviors/CreepOptions/AttackOption";
+import { RepairOption } from "./Behaviors/CreepOptions/RepairOption";
+// import { DropEnergyOption } from "./Behaviors/CreepOptions/DropEnergyOption";
 
 export class CreepUtilityAi extends UtilityAi {
 }
 
 export const initializeCreepOptions = (ai: CreepUtilityAi, room: Room) => {
   ai.addOption(new DoNothingOption());
-  // ai.addOption(new DropAllEnergyOption());
+  // ai.addOption(new DropEnergyOption());
 
   for (let spawn of room.find(FIND_MY_SPAWNS)) {
     ai.addOption(new FillSpawnOption(spawn.id));
@@ -31,8 +34,12 @@ export const initializeCreepOptions = (ai: CreepUtilityAi, room: Room) => {
   }
 
   for (let resource of room.find(FIND_DROPPED_RESOURCES)) {
-    ai.addOption(new PickupDroppedResourceOption(resource.id));
+    ai.addOption(new PickupOption(resource.id));
   }
+
+  // for (let tombstone of room.find(FIND_TOMBSTONES)) {
+  //   ai.addOption(new PickupOption(tombstone.id));
+  // }
 
   for (let constructionSite of room.find(FIND_CONSTRUCTION_SITES)) {
     ai.addOption(new BuildOption(constructionSite.id));
@@ -40,5 +47,17 @@ export const initializeCreepOptions = (ai: CreepUtilityAi, room: Room) => {
 
   for (let extension of room.find(FIND_STRUCTURES, { filter: { structureType: STRUCTURE_EXTENSION}})) {
     ai.addOption(new FillExtensionOption(extension.id));
+  }
+
+  for (let invader of room.find(FIND_HOSTILE_CREEPS)) {
+    ai.addOption(new AttackOption(invader.id));
+  }
+
+  for (let structure of room.find(FIND_STRUCTURES)) {
+    ai.addOption(new RepairOption(structure.id));
+
+    if (structure.structureType === STRUCTURE_CONTAINER) {
+      ai.addOption(new PickupOption(structure.id))
+    }
   }
 };

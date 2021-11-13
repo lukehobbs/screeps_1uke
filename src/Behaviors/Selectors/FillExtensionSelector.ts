@@ -9,7 +9,7 @@ export class FillExtensionSelector extends Option {
   destinationId: string;
 
   constructor(destinationId: string) {
-    super(`Fill extension ${destinationId}`, []);
+    super(`Fill ext. ${destinationId}`, []);
     this.destinationId = destinationId;
 
     this.action = this.MoveOrFillExtensionSelector();
@@ -18,8 +18,8 @@ export class FillExtensionSelector extends Option {
   MoveOrFillExtensionSelector = (): Action => {
     const selector = new Selector();
 
-    selector.addChild(new MoveAction<StructureExtension>(this.destinationId));
     selector.addChild(new TransferAction(this.destinationId));
+    selector.addChild(new MoveAction<StructureExtension>(this.destinationId));
 
     return selector;
   };

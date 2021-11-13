@@ -10,6 +10,7 @@ namespace RoomStatistics {
 
   export function updateStats(room: Room, stats: RoomStats): void {
     const roomMemory = room.memory as RoomMemory;
+
     const sources = roomMemory.work.sources;
     const sourceObjs = room.find(FIND_SOURCES).filter(source => sources.map(s => s.id).includes(source.id));
     const harvestedInLastTick = energyHarvestedInLastTick(room);

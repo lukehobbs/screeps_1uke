@@ -1,4 +1,5 @@
 import { Action, ActionStatus } from "../../UtilityAi/Action";
+import { RESOURCE_ENERGY } from "../../../test/unit/constants";
 
 export class PickupAction extends Action {
   private readonly destinationId: string;
@@ -9,15 +10,21 @@ export class PickupAction extends Action {
   }
 
   run(context: IContext): ActionStatus {
-    const resource = Game.getObjectById(this.destinationId as Id<Resource>);
+    const dest = Game.getObjectById(this.destinationId as Id<AnyStructure>);
+    if (!dest) return ActionStatus.FAILURE;
 
-    if (!resource) return ActionStatus.FAILURE;
+    let err;
 
-    const err = context.creep.pickup(resource);
+    if (dest.structureType == null) {
+      err = context.creep.pickup(dest);
+    } else {
+      err = context.creep.withdraw(dest, RESOURCE_ENERGY);
+    }
 
     if (err === OK) {
       return ActionStatus.SUCCESS;
     } else {
+      // console.log(err);
       return ActionStatus.FAILURE;
     }
   }

@@ -6,8 +6,25 @@ const YELLOW = "yellow";
 const DIM_GRAY = "dimgray";
 const GREEN = "green";
 
+const COLOR_SCALE = [
+  "#29f800",
+  "#50f100",
+  "#75ea00",
+  "#00ff00",
+  "#97e300",
+  "#b7dc00",
+  "#d4d400",
+  "#cdab00",
+  "#c68400",
+  "#bf6000",
+  "#b83d00",
+  "#b11e00",
+  "#aa0000"
+]
+
 export const log = {
   colored: (color: string, msg: string): string => `<span style="color:${color}">${msg}</span>`,
+  coloredAction: (color: string, msg: string, creep?: Creep): string => `<span style="color:${color}">${!!creep ? padCreepName(creep.name) : ""} ${msg}</span>`,
   action: (msg: any, creep?: Creep): void => {
     !!creep ? log.print(log.colored(POWDER_BLUE, `${padCreepName(creep.name)} ${msg}`))
       : log.print(log.colored(POWDER_BLUE, msg));
@@ -22,7 +39,10 @@ export const log = {
   },
   getTickstamp: (): string => log.colored(DIM_GRAY, `[${Game.time}]`),
   print: (msg: any): void => console.log(`${log.getTickstamp()} ${msg}`),
-  success: (msg: any): void => log.print(log.colored(GREEN, msg))
+  success: (msg: any): void => log.print(log.colored(GREEN, msg)),
+  score: (score: number): string => {
+    return `<span style="color:${COLOR_SCALE[Math.floor((1-score)*(COLOR_SCALE.length - 1))]}">${score.toFixed(2)}</span>`
+  }
 };
 
 const padCreepName = (name?: string): string => {

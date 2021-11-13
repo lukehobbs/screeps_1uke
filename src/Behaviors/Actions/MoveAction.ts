@@ -8,14 +8,17 @@ export class MoveAction<T extends HasPos> extends Action {
     this.destinationId = destinationId;
   }
 
-  run(context: IContext): ActionStatus {
+  run({ creep }: IContext): ActionStatus {
     const dest = Game.getObjectById(this.destinationId as Id<T>);
 
     if (!dest) return ActionStatus.FAILURE;
 
-    if (context.creep.pos.isNearTo(dest.pos)) return ActionStatus.FAILURE;
+    // This fucks with utility functions bc inventory is fluctuating when creeps walk in a line
+    // if (creep?.fatigue && creep.fatigue > 0) creep.drop(RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY) * 0.25)
 
-    const err = context.creep.travelTo(dest);
+    if (creep.pos.isNearTo(dest.pos)) return ActionStatus.FAILURE;
+
+    const err = creep.travelTo(dest);
 
     if (err === OK) {
       return ActionStatus.SUCCESS;

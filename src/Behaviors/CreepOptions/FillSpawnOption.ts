@@ -14,7 +14,7 @@ export class FillSpawnOption extends FillSpawnSelector {
     this.scores = [];
 
     this.scores.push(new Score("i'm the only creep", (): number => {
-      return (_.size(_.values(Game.creeps))) == 1 ? 1 : 0.5
+      return (_.size(_.values(Game.creeps))) <= 2 ? 1 : 0.5
     }));
 
     this.scores.push(new Score("energy in spawn", ({spawn: { store }}: IContext): number => {
@@ -28,7 +28,7 @@ export class FillSpawnOption extends FillSpawnSelector {
     }));
 
     this.scores.push(new Score("proximity to spawn", ({ creep, spawn }): number => {
-      return (5 - creep.pos.getRangeTo(spawn.pos)) / 5;
+      return (50 - creep.pos.getRangeTo(spawn.pos)) / 50;
     }));
   }
 }

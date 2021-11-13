@@ -19,7 +19,7 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
     //
     //   if (!controller) return -Infinity;
     //
-    //   return (10000 - controller.ticksToDowngrade) / 10000;
+    //   return (20000 - controller.ticksToDowngrade) / 20000;
     // }));
 
     this.scores.push(new Score("proximity to controller", ({ creep }) => {
@@ -27,11 +27,21 @@ export class UpgradeControllerOption extends UpgradeControllerSelector {
 
       if (!controller) return -Infinity;
 
-      return (20 - creep.pos.getRangeTo(controller.pos)) / 20;
+      return (50 - creep.pos.getRangeTo(controller.pos)) / 50;
     }));
 
-    // this.scores.push(new Score("spawn energy", ({ spawn }) => {
-    //   return spawn.store.getFreeCapacity(RESOURCE_ENERGY) < 150 ? -.1 : 1;
+    this.scores.push(new Score("proximity to controller", ({ creep }) => {
+      const controller = Game.getObjectById(destinationId as Id<StructureController>);
+
+      if (!controller) return -Infinity;
+
+
+      return creep.pos.inRangeTo(controller.pos, 5) ? 1 : 0.5;
+    }));
+
+    // this.scores.push(new Score("number of creeps", () => {
+    //   const creepCount = _.values(Game.creeps).length;
+    //   return creepCount / (creepCount + 5);
     // }));
   }
 }

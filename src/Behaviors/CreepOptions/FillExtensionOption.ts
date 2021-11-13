@@ -6,11 +6,14 @@ export class FillExtensionOption extends FillExtensionSelector {
   constructor(destinationId: string) {
     super(destinationId);
 
-    this.condition = (({ room, creep }) => {
+    this.condition = (({ creep }) => {
       if (creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) return false;
-      return room.find(FIND_STRUCTURES).filter((s) => {
-        return s.structureType == STRUCTURE_EXTENSION && (s as StructureExtension).store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-      }).length > 0;
+      // if (_.values(Game.creeps).length > 9) return false;
+      const ext = Game.getObjectById(destinationId as Id<StructureExtension>);
+
+      if (!ext) return false;
+
+      return ext.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
     });
 
     this.scores = [];
@@ -28,17 +31,7 @@ export class FillExtensionOption extends FillExtensionSelector {
 
       if (!dest) return -100;
 
-      return (15 - creep.pos.getRangeTo(dest.pos)) / 15;
-    }));
-
-    this.scores.push(new Score("extension has room", (): number => {
-      const dest = Game.getObjectById(this.destinationId as Id<StructureExtension>);
-
-      if (!dest) return -100;
-
-      const extensionStore = (dest as StructureExtension).store
-
-      return extensionStore.getUsedCapacity(RESOURCE_ENERGY) === extensionStore.getCapacity(RESOURCE_ENERGY) ? -100 : 0;
+      return (50 - creep.pos.getRangeTo(dest.pos)) / 50;
     }));
   }
 }

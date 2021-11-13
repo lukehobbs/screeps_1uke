@@ -13,7 +13,7 @@ export class UpgradeControllerSelector extends Option {
     this.destinationId = destinationId;
 
     this.action = new Selector();
-    this.action.addChild(new MoveAction<StructureController>(this.destinationId));
     this.action.addChild(new TransferAction(this.destinationId));
+    this.action.addChild(new MoveAction<StructureController>(this.destinationId));
   }
 }

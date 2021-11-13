@@ -4,7 +4,7 @@ import { Traveler } from "../Utils/traveler/traveler";
 import { log } from "../Utils/log";
 
 namespace RoomPlanner {
-  const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
+  export const getAdjacentTiles = (pos: RoomPosition): RoomPosition[] => {
     const adjacentTiles: RoomPosition[] = [];
 
     for (let x = pos.x - 1; x < pos.x + 2; x++) {
@@ -51,6 +51,7 @@ namespace RoomPlanner {
   };
 
   export const plan = (room: Room, roomMemory: RoomMemory): void => {
+    if (!room.controller?.my) return;
     roomMemory.spawn = spawn(room, roomMemory);
     roomMemory.work = planWork(room);
     roomMemory.paths = commonPaths(roomMemory);

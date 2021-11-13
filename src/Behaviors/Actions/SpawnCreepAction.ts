@@ -32,6 +32,7 @@ export class SpawnCreepAction extends Action {
       context.room.memory.lastSpawned = Game.time;
       return ActionStatus.SUCCESS;
     } else {
+      // console.log(err);
       return ActionStatus.FAILURE;
     }
   }
