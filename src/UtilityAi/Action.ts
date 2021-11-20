@@ -20,3 +20,10 @@ export abstract class Action {
 
   public abstract run(context: IContext): ActionStatus;
 }
+
+export abstract class GenericAction<StorageType> extends Action {
+  protected constructor() {
+    super();
+  }
+}
+

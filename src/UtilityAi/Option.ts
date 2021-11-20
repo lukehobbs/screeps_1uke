@@ -15,17 +15,14 @@ export interface IOption {
 }
 
 export abstract class Option implements IOption {
+  abstract action: Action;
+
   protected constructor(id: string, scores: Score[]) {
     this.id = id;
     this.scores = scores;
   };
 
   condition: (context: IContext) => boolean = () => true;
-
-  abstract action: Action;
-
-  id: string;
-  scores: Score[];
 
   eval(context: IContext): number {
     if (!this.condition(context)) {
@@ -45,15 +42,18 @@ export abstract class Option implements IOption {
     //   console.log(`[${context.spawn.id}:${this.id}] Score: ${score}`);
     // }
 
-    if (context?.creep && this.id !== "" && context.creep.memory.debug && score > 0) {
-      log.action(`${this.id.padEnd(32, " ")}\tScore: ${score.toFixed(2)}`, context.creep);
+    if (context?.creep && this.id !== "" && context.creep?.memory?.debug && score > 0) {
+      log.action(`${this.id.padEnd(32, " ")}\tScore: ${log.score(score)}`, context.creep);
     }
 
     return score;
   }
 
+  id: string;
+
   validateScore(score: number): number {
     if (!isNaN(score)) return score;
     else return 0;
   }
+  scores: Score[];
 }

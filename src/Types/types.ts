@@ -6,6 +6,7 @@ declare global {
     work: WorkDetails;
     bootstrapped: boolean | undefined;
     stats: RoomStats | undefined;
+    buildRoadGrid: boolean | undefined;
   }
 }
 

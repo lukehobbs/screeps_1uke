@@ -21,6 +21,7 @@ export class TransferAction extends Action {
     if (err === OK) {
       return ActionStatus.SUCCESS;
     } else {
+      // console.log(err);
       return ActionStatus.FAILURE;
     }
   }

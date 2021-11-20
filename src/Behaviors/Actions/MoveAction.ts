@@ -13,10 +13,9 @@ export class MoveAction<T extends HasPos> extends Action {
 
     if (!dest) return ActionStatus.FAILURE;
 
-    // This fucks with utility functions bc inventory is fluctuating when creeps walk in a line
-    // if (creep?.fatigue && creep.fatigue > 0) creep.drop(RESOURCE_ENERGY, creep.store.getUsedCapacity(RESOURCE_ENERGY) * 0.25)
-
-    if (creep.pos.isNearTo(dest.pos)) return ActionStatus.FAILURE;
+    if ((creep as unknown as StructureTower).structureType === STRUCTURE_TOWER) {
+      return ActionStatus.FAILURE;
+    }
 
     const err = creep.travelTo(dest);
 

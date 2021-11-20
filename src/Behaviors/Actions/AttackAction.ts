@@ -19,6 +19,7 @@ export class AttackAction extends Action {
     if (err === OK) {
       return ActionStatus.SUCCESS;
     } else {
+      console.log(err);
       return ActionStatus.FAILURE;
     }
   }
